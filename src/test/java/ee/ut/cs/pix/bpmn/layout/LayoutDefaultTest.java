@@ -2,13 +2,12 @@ package ee.ut.cs.pix.bpmn.layout;
 
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class BPMNLayoutCreatorDefaultTest {
+class LayoutDefaultTest {
 
     @Test
     void createLayout() throws Exception {
@@ -17,7 +16,8 @@ class BPMNLayoutCreatorDefaultTest {
                         Files.readAllBytes(
                                 Paths.get("src/test/resources/LoanApp_simplified_nodi.bpmn")));
 
-        String result = (new BPMNLayoutCreatorDefault()).createLayout(bpmnModel);
+        Coordinator coordinator = new CytoscapeCoordinator();
+        String result = (new LayoutDefault()).createLayout(bpmnModel, coordinator);
         assertTrue(result.contains("BPMNShape"));
         Files.write(
                 Paths.get("src/test/resources/LoanApp_simplified_nodi_layout.bpmn"),

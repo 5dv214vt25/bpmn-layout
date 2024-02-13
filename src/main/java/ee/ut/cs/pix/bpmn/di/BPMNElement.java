@@ -1,4 +1,4 @@
-package ee.ut.cs.pix.bpmn.layout.di;
+package ee.ut.cs.pix.bpmn.di;
 
 public enum BPMNElement {
     STARTEVENT("startEvent"),

@@ -1,4 +1,4 @@
-package ee.ut.cs.pix.bpmn.layout.di;
+package ee.ut.cs.pix.bpmn.di;
 
 import java.util.ArrayList;
 import java.util.Collection;

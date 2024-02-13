@@ -2,6 +2,10 @@ package ee.ut.cs.pix.bpmn.layout;
 
 import com.google.gson.Gson;
 
+import ee.ut.cs.pix.bpmn.graph.FlowArc;
+import ee.ut.cs.pix.bpmn.graph.FlowNode;
+import ee.ut.cs.pix.bpmn.graph.Graph;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,9 +13,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
-public class CytoscapeRemoteLayout {
-
-    public static void createLayout(Graph graph) {
+public class CytoscapeCoordinator implements Coordinator {
+    @Override
+    public void updateCoordinates(Graph graph) {
         String body = prepareRequestBody(graph);
         try {
             CytoscapeResponse response = sendRequest(body);

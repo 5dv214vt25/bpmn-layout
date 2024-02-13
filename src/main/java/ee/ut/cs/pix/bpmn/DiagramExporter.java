@@ -1,16 +1,16 @@
-package ee.ut.cs.pix.bpmn.layout;
+package ee.ut.cs.pix.bpmn;
 
-import ee.ut.cs.pix.bpmn.layout.di.BPMNEdge;
-import ee.ut.cs.pix.bpmn.layout.di.BPMNShape;
-import ee.ut.cs.pix.bpmn.layout.di.Bounds;
-import ee.ut.cs.pix.bpmn.layout.di.Waypoint;
+import ee.ut.cs.pix.bpmn.di.BPMNEdge;
+import ee.ut.cs.pix.bpmn.di.BPMNShape;
+import ee.ut.cs.pix.bpmn.di.Bounds;
+import ee.ut.cs.pix.bpmn.di.Waypoint;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import java.util.List;
 
-import static ee.ut.cs.pix.bpmn.layout.DomUtils.getFirstByTagName;
+import static ee.ut.cs.pix.bpmn.DomUtils.getFirstByTagName;
 
 public class DiagramExporter {
     public static void addDiagramToDefinitions(

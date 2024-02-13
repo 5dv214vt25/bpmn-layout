@@ -1,16 +1,22 @@
 package ee.ut.cs.pix.bpmn.layout;
 
-import edu.uci.ics.jung.algorithms.layout.*;
+import edu.uci.ics.jung.algorithms.layout.Layout;
+import edu.uci.ics.jung.algorithms.layout.SpringLayout2;
 import edu.uci.ics.jung.graph.DirectedGraph;
 import edu.uci.ics.jung.graph.DirectedSparseMultigraph;
 import edu.uci.ics.jung.graph.util.EdgeType;
-import ee.ut.cs.pix.bpmn.layout.di.BPMNElement;
+
+import ee.ut.cs.pix.bpmn.di.BPMNElement;
+import ee.ut.cs.pix.bpmn.graph.FlowArc;
+import ee.ut.cs.pix.bpmn.graph.FlowNode;
+import ee.ut.cs.pix.bpmn.graph.Graph;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
 
-public class JungLayout {
-    public static void createLayout(Graph graph) {
+public class JungCoordinator implements Coordinator {
+    @Override
+    public void updateCoordinates(Graph graph) {
         DirectedGraph<String, String> jGraph = jungGraph(graph);
         Layout<String, String> layout = new CustomLayout<>(jGraph, 100, 100);
         int w = 1000; // graph.getNodes().size() * 100 * 2;

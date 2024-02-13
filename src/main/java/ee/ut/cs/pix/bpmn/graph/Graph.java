@@ -1,4 +1,4 @@
-package ee.ut.cs.pix.bpmn.layout;
+package ee.ut.cs.pix.bpmn.graph;
 
 import java.util.ArrayList;
 import java.util.List;

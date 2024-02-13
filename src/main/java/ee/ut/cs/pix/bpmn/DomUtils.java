@@ -1,9 +1,14 @@
-package ee.ut.cs.pix.bpmn.layout;
+package ee.ut.cs.pix.bpmn;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -12,10 +17,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.*;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
 
 public class DomUtils {
     public static Document parseXML(String process) throws Exception {
@@ -39,18 +40,6 @@ public class DomUtils {
         return nodes.item(0);
     }
 
-    public static Node getNodeById(Document doc, String id) {
-        XPathFactory xpathFactory = XPathFactory.newInstance();
-        XPath xpath = xpathFactory.newXPath();
-        try {
-            XPathExpression expr = xpath.compile("//*[@id='" + id + "']");
-            return (Node) expr.evaluate(doc, XPathConstants.NODE);
-        } catch (XPathExpressionException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     public static List<Node> getChildrenByTagName(Node node, String tagName) {
         // NOTE: children must have the ID attribute
         List<Node> nodes = new ArrayList<>();
@@ -64,5 +53,17 @@ public class DomUtils {
             }
         }
         return nodes;
+    }
+
+    public static Node getNodeById(Document doc, String id) {
+        XPathFactory xpathFactory = XPathFactory.newInstance();
+        XPath xpath = xpathFactory.newXPath();
+        try {
+            XPathExpression expr = xpath.compile("//*[@id='" + id + "']");
+            return (Node) expr.evaluate(doc, XPathConstants.NODE);
+        } catch (XPathExpressionException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

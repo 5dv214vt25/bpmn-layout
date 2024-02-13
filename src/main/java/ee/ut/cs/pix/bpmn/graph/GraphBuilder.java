@@ -1,14 +1,15 @@
-package ee.ut.cs.pix.bpmn.layout;
+package ee.ut.cs.pix.bpmn.graph;
 
-import ee.ut.cs.pix.bpmn.layout.di.BPMNElement;
+import ee.ut.cs.pix.bpmn.DomUtils;
+import ee.ut.cs.pix.bpmn.di.BPMNElement;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import java.util.HashMap;
 import java.util.List;
 
-import static ee.ut.cs.pix.bpmn.layout.DomUtils.getChildrenByTagName;
-import static ee.ut.cs.pix.bpmn.layout.DomUtils.getNodeById;
+import static ee.ut.cs.pix.bpmn.DomUtils.getChildrenByTagName;
+import static ee.ut.cs.pix.bpmn.DomUtils.getNodeById;
 
 public class GraphBuilder {
     private final HashMap<String, Boolean> visitedNodes = new HashMap<>();

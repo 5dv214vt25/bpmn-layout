@@ -1,6 +1,6 @@
-package ee.ut.cs.pix.bpmn.layout;
+package ee.ut.cs.pix.bpmn.graph;
 
-import ee.ut.cs.pix.bpmn.layout.di.BPMNElement;
+import ee.ut.cs.pix.bpmn.di.BPMNElement;
 
 // FlowNode represents a node in the BPMN process, e.g., a task, event, or gateway.
 public class FlowNode {

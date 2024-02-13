@@ -1,19 +1,19 @@
 package ee.ut.cs.pix.bpmn.layout;
 
-import edu.uci.ics.jung.algorithms.layout.Layout;
-import edu.uci.ics.jung.algorithms.layout.SpringLayout;
+import edu.uci.ics.jung.algorithms.layout.*;
+import edu.uci.ics.jung.graph.DirectedGraph;
 import edu.uci.ics.jung.graph.DirectedSparseMultigraph;
-import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.util.EdgeType;
+import ee.ut.cs.pix.bpmn.layout.di.BPMNElement;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
 
 public class JungLayout {
-    public static void createLayout(ee.ut.cs.pix.bpmn.layout.Graph graph) {
-        Graph<String, String> jGraph = jungGraph(graph);
-        Layout<String, String> layout = new CustomSpringLayout<>(jGraph, 100, 100);
-        int w = graph.getNodes().size() * 100 * 2;
+    public static void createLayout(Graph graph) {
+        DirectedGraph<String, String> jGraph = jungGraph(graph);
+        Layout<String, String> layout = new CustomLayout<>(jGraph, 100, 100);
+        int w = 1000; // graph.getNodes().size() * 100 * 2;
         layout.setSize(new Dimension(w, w));
         layout.initialize();
         for (String vertex : jGraph.getVertices()) {
@@ -29,9 +29,13 @@ public class JungLayout {
         }
     }
 
-    static Graph<String, String> jungGraph(ee.ut.cs.pix.bpmn.layout.Graph graph) {
-        Graph<String, String> jungGraph = new DirectedSparseMultigraph<>();
+    static DirectedGraph<String, String> jungGraph(Graph graph) {
+        DirectedGraph<String, String> jungGraph = new DirectedSparseMultigraph<>();
         for (FlowNode node : graph.getNodes()) {
+            if (node.type != BPMNElement.TASK) { // consider only tasks
+                System.out.println("Ignoring " + node.type);
+                continue;
+            }
             jungGraph.addVertex(node.id);
         }
         for (FlowArc edge : graph.getEdges()) {
@@ -39,42 +43,29 @@ public class JungLayout {
         }
         return jungGraph;
     }
-
-    static Graph<String, String> createGraph() {
-        Graph<String, String> graph = new DirectedSparseMultigraph<String, String>();
-        String v1 = "Foo";
-        String v2 = "Bar";
-        String v3 = "Baz";
-        graph.addVertex(v1);
-        graph.addVertex(v2);
-        graph.addVertex(v3);
-        graph.addEdge("Edge1", v1, v2, EdgeType.DIRECTED);
-        graph.addEdge("Edge2", v2, v3, EdgeType.DIRECTED);
-        return graph;
-    }
 }
 
-class CustomSpringLayout<V, E> extends SpringLayout<V, E> {
-    private final int vertexWidth;
-    private final int vertexHeight;
+class CustomLayout<V, E> extends SpringLayout2<V, E> {
+    // private final int vertexWidth;
+    // private final int vertexHeight;
 
-    public CustomSpringLayout(Graph<V, E> g, int vertexWidth, int vertexHeight) {
+    public CustomLayout(DirectedGraph<V, E> g, int vertexWidth, int vertexHeight) {
         super(g);
-        this.vertexWidth = vertexWidth;
-        this.vertexHeight = vertexHeight;
+        // this.vertexWidth = vertexWidth;
+        // this.vertexHeight = vertexHeight;
     }
 
-    @Override
-    public void setLocation(V v, Point2D location) {
-        double x =
-                Math.max(
-                        vertexWidth / 2.0,
-                        Math.min(size.getWidth() - vertexWidth / 2.0, location.getX()));
-        double y =
-                Math.max(
-                        vertexHeight / 2.0,
-                        Math.min(size.getHeight() - vertexHeight / 2.0, location.getY()));
-        Point2D adjustedLocation = new Point2D.Double(x, y);
-        super.setLocation(v, adjustedLocation);
-    }
+    // @Override
+    // public void setLocation(V v, Point2D location) {
+    //     double x =
+    //             Math.max(
+    //                     vertexWidth / 2.0,
+    //                     Math.min(size.getWidth() - vertexWidth / 2.0, location.getX()));
+    //     double y =
+    //             Math.max(
+    //                     vertexHeight / 2.0,
+    //                     Math.min(size.getHeight() - vertexHeight / 2.0, location.getY()));
+    //     Point2D adjustedLocation = new Point2D.Double(x, y);
+    //     super.setLocation(v, adjustedLocation);
+    // }
 }

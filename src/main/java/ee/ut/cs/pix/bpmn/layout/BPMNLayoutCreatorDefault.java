@@ -60,7 +60,8 @@ public class BPMNLayoutCreatorDefault implements BPMNLayoutCreator {
 
         Graph graph = new GraphBuilder().build(doc);
 
-        JungLayout.createLayout(graph);
+        // JungLayout.createLayout(graph);
+        CytoscapeRemoteLayout.createLayout(graph);
 
         List<BPMNShape> shapes = createShapes(graph);
         List<BPMNEdge> edges = createEdges(graph);

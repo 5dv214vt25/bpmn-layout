@@ -31,6 +31,7 @@ public class GraphBuilder {
         String id = node.getAttributes().getNamedItem("id").getNodeValue();
 
         if (BPMNElement.fromValue(nodeName) == BPMNElement.ENDEVENT) {
+            graph.addNode(createFlowNode(node));
             return;
         }
         if (BPMNElement.fromValue(nodeName) == BPMNElement.SEQUENCEFLOW) {
@@ -79,15 +80,27 @@ public class GraphBuilder {
 
     private FlowNode createFlowNode(Node node) {
         String id = node.getAttributes().getNamedItem("id").getNodeValue();
+        String name = getOptionalName(node);
         String nodeName = node.getNodeName();
-        return new FlowNode(id, BPMNElement.fromValue(nodeName));
+        return new FlowNode(id, name, BPMNElement.fromValue(nodeName));
     }
 
     private FlowArc createFlowArc(Node node) {
         String id = node.getAttributes().getNamedItem("id").getNodeValue();
+        String name = getOptionalName(node);
         Node source = getSourceFromSequenceFlow(node);
         Node target = getTargetFromSequenceFlow(node);
         return new FlowArc(
-                id, createFlowNode(source), createFlowNode(target), BPMNElement.SEQUENCEFLOW);
+                id, name, createFlowNode(source), createFlowNode(target), BPMNElement.SEQUENCEFLOW);
+    }
+
+    private static String getOptionalName(Node node) {
+        String name;
+        try {
+            name = node.getAttributes().getNamedItem("name").getNodeValue();
+        } catch (NullPointerException e) {
+            name = "";
+        }
+        return name;
     }
 }

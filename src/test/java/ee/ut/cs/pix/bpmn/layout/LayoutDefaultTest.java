@@ -16,7 +16,7 @@ class LayoutDefaultTest {
                         Files.readAllBytes(
                                 Paths.get("src/test/resources/LoanApp_simplified_nodi.bpmn")));
 
-        Coordinator coordinator = new CytoscapeCoordinator();
+        Coordinator coordinator = new SugiyamaCoordinator();
         String result = (new LayoutDefault()).createLayout(bpmnModel, coordinator);
         assertTrue(result.contains("BPMNShape"));
         Files.write(

@@ -13,24 +13,20 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
-public class CytoscapeCoordinator implements Coordinator {
+public class CytoscapeLayout implements Layout {
     @Override
-    public void updateCoordinates(Graph graph) {
+    public void apply(Graph graph) throws IOException {
         String body = prepareRequestBody(graph);
-        try {
-            CytoscapeResponse response = sendRequest(body);
-            for (CytoscapeNode node : response.nodes) {
-                graph.getNodes()
-                        .forEach(
-                                n -> {
-                                    if (n.id.equals(node.id)) {
-                                        n.x = node.x;
-                                        n.y = node.y;
-                                    }
-                                });
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        CytoscapeResponse response = sendRequest(body);
+        for (CytoscapeNode node : response.nodes) {
+            graph.getNodes()
+                    .forEach(
+                            n -> {
+                                if (n.id.equals(node.id)) {
+                                    n.x = node.x;
+                                    n.y = node.y;
+                                }
+                            });
         }
     }
 

@@ -1,19 +1,46 @@
 package ee.ut.cs.pix.bpmn;
 
-import ee.ut.cs.pix.bpmn.di.BPMNEdge;
-import ee.ut.cs.pix.bpmn.di.BPMNShape;
-import ee.ut.cs.pix.bpmn.di.Bounds;
-import ee.ut.cs.pix.bpmn.di.Waypoint;
+import static ee.ut.cs.pix.bpmn.DomUtils.getFirstByTagName;
+
+import ee.ut.cs.pix.bpmn.di.*;
+import ee.ut.cs.pix.bpmn.graph.FlowArc;
+import ee.ut.cs.pix.bpmn.graph.FlowNode;
+import ee.ut.cs.pix.bpmn.graph.Graph;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import static ee.ut.cs.pix.bpmn.DomUtils.getFirstByTagName;
+public class XmlExporter {
+    public static void addDiagramInterchangeToDefinitions(Document doc, Graph graph)
+            throws Exception {
+        List<BPMNShape> shapes = createShapes(graph);
+        List<BPMNEdge> edges = createEdges(graph);
+        addDiagramToDefinitions(doc, shapes, edges);
+    }
 
-public class DiagramExporter {
-    public static void addDiagramToDefinitions(
+    private static List<BPMNShape> createShapes(Graph graph) {
+        List<BPMNShape> shapes = new ArrayList<>();
+        for (FlowNode node : graph.getNodes()) {
+            Bounds bounds = createBounds(node);
+            shapes.add(new BPMNShape(node.id, false, bounds));
+        }
+        return shapes;
+    }
+
+    private static List<BPMNEdge> createEdges(Graph graph) {
+        List<BPMNEdge> edges = new ArrayList<>();
+        for (FlowArc edge : graph.getEdges()) {
+            String id = edge.id + "_edge";
+            edges.add(new BPMNEdge(id, edge.id, edge.source.id, edge.target.id, edge.waypoints));
+        }
+        return edges;
+    }
+
+    private static void addDiagramToDefinitions(
             Document doc, List<BPMNShape> shapes, List<BPMNEdge> edges)
             throws IllegalArgumentException {
         // register dc and di namespaces
@@ -37,6 +64,28 @@ public class DiagramExporter {
         }
         Node definitions = getFirstByTagName(doc, "definitions");
         definitions.appendChild(diagram);
+    }
+
+    private static Bounds createBounds(FlowNode node) {
+        Bounds bounds;
+        if (node.type == BPMNElement.TASK) {
+            bounds = Bounds.defaultTaskBounds();
+        } else if (node.type == BPMNElement.STARTEVENT) {
+            bounds = Bounds.defaultEventBounds();
+        } else if (node.type == BPMNElement.ENDEVENT) {
+            bounds = Bounds.defaultEventBounds();
+        } else if (node.type == BPMNElement.INCLUSIVEGATEWAY) {
+            bounds = Bounds.defaultGatewayBounds();
+        } else if (node.type == BPMNElement.EXCLUSIVEGATEWAY) {
+            bounds = Bounds.defaultGatewayBounds();
+        } else if (node.type == BPMNElement.PARALLELGATEWAY) {
+            bounds = Bounds.defaultGatewayBounds();
+        } else {
+            bounds = Bounds.defaultBounds();
+        }
+        bounds.x = node.x;
+        bounds.y = node.y;
+        return bounds;
     }
 
     private static Element createDiagramXML(Document doc) {
@@ -64,15 +113,6 @@ public class DiagramExporter {
         return root;
     }
 
-    private static Element convertBoundsToXML(Document doc, Bounds bounds) {
-        Element root = doc.createElement("dc:Bounds");
-        root.setAttribute("x", bounds.x.toString());
-        root.setAttribute("y", bounds.y.toString());
-        root.setAttribute("width", bounds.width.toString());
-        root.setAttribute("height", bounds.height.toString());
-        return root;
-    }
-
     private static Element convertEdgeToXML(Document doc, BPMNEdge edge) {
         Element root = doc.createElement("bpmndi:BPMNEdge");
         root.setAttribute("id", edge.id);
@@ -87,6 +127,15 @@ public class DiagramExporter {
             Element wp = convertWaypointToXML(doc, waypoint);
             root.appendChild(wp);
         }
+        return root;
+    }
+
+    private static Element convertBoundsToXML(Document doc, Bounds bounds) {
+        Element root = doc.createElement("dc:Bounds");
+        root.setAttribute("x", bounds.x.toString());
+        root.setAttribute("y", bounds.y.toString());
+        root.setAttribute("width", bounds.width.toString());
+        root.setAttribute("height", bounds.height.toString());
         return root;
     }
 

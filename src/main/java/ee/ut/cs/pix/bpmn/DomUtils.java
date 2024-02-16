@@ -5,10 +5,11 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import java.io.StringReader;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -19,15 +20,17 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.*;
 
 public class DomUtils {
-    public static Document parseXML(String process) throws Exception {
+    private static final Logger logger = Logger.getLogger(DomUtils.class.getName());
+
+    public static Document parseXML(InputStream input) throws Exception {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
-        Document doc = builder.parse(new InputSource(new StringReader(process)));
+        Document doc = builder.parse(new InputSource(input));
         doc.getDocumentElement().normalize();
         return doc;
     }
 
-    public static String convertDocumentToString(Document doc) throws Exception {
+    public static String toXML(Document doc) throws Exception {
         TransformerFactory tf = TransformerFactory.newInstance();
         Transformer transformer = tf.newTransformer();
         StringWriter writer = new StringWriter();
@@ -62,7 +65,7 @@ public class DomUtils {
             XPathExpression expr = xpath.compile("//*[@id='" + id + "']");
             return (Node) expr.evaluate(doc, XPathConstants.NODE);
         } catch (XPathExpressionException e) {
-            e.printStackTrace();
+            logger.severe("Error while getting node by id: " + e.getMessage());
         }
         return null;
     }

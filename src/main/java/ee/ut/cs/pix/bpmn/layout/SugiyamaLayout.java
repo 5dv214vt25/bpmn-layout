@@ -5,10 +5,10 @@ import ee.ut.cs.pix.bpmn.graph.Graph;
 import java.awt.geom.Point2D;
 import java.util.*;
 
-public class SugiyamaCoordinator implements Coordinator {
+public class SugiyamaLayout implements Layout {
     @Override
-    public void updateCoordinates(Graph graph) {
-        SugiyamaLayout layout = new SugiyamaLayout(graph);
+    public void apply(Graph graph) {
+        SugiyamaAlgorithm layout = new SugiyamaAlgorithm(graph);
         Map<String, Point2D> positions = layout.getNodePositions();
         graph.getNodes()
                 .forEach(
@@ -18,12 +18,12 @@ public class SugiyamaCoordinator implements Coordinator {
                         });
     }
 
-    static class SugiyamaLayout {
+    static class SugiyamaAlgorithm {
         private final Map<String, Point2D> nodePositions = new HashMap<>();
         private final Map<String, List<String>> adjacencyList = new HashMap<>();
         private final Map<String, Integer> layerAssignment = new HashMap<>();
 
-        public SugiyamaLayout(Graph graph) {
+        public SugiyamaAlgorithm(Graph graph) {
             graph.getNodes().forEach(n -> addNode(n.id));
             graph.getEdges().forEach(e -> addEdge(e.source.id, e.target.id));
 

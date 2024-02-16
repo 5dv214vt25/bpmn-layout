@@ -5,6 +5,9 @@ import ee.ut.cs.pix.bpmn.di.BPMNElement;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.StringReader;
 import java.util.HashMap;
 import java.util.List;
 
@@ -22,7 +25,8 @@ public class GraphBuilder {
     }
 
     public static Graph buildFromString(String xml) throws Exception {
-        Document doc = parseXML(xml);
+        ByteArrayInputStream xmlStream = new ByteArrayInputStream(xml.getBytes());
+        Document doc = parseXML(xmlStream);
         return new GraphBuilder().build(doc);
     }
 

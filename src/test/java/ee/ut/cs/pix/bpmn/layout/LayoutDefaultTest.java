@@ -16,7 +16,7 @@ class LayoutDefaultTest {
                         Files.readAllBytes(
                                 Paths.get("src/test/resources/LoanApp_simplified_nodi.bpmn")));
 
-        Coordinator coordinator = new SugiyamaCoordinator();
+        Coordinator coordinator = new GraphvizCoordinator();
         String result = (new LayoutDefault()).createLayout(bpmnModel, coordinator);
         assertTrue(result.contains("BPMNShape"));
         Files.write(

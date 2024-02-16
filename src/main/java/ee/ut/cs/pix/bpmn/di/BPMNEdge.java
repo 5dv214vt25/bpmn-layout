@@ -23,4 +23,17 @@ public class BPMNEdge {
         this.targetElement = targetElement;
         this.waypoints = new ArrayList<>();
     }
+
+    public BPMNEdge(
+            String id,
+            String bpmnElement,
+            String sourceElement,
+            String targetElement,
+            Collection<Waypoint> waypoints) {
+        this.id = id;
+        this.bpmnElement = bpmnElement;
+        this.sourceElement = sourceElement;
+        this.targetElement = targetElement;
+        this.waypoints = waypoints;
+    }
 }

@@ -8,8 +8,7 @@ import org.w3c.dom.Node;
 import java.util.HashMap;
 import java.util.List;
 
-import static ee.ut.cs.pix.bpmn.DomUtils.getChildrenByTagName;
-import static ee.ut.cs.pix.bpmn.DomUtils.getNodeById;
+import static ee.ut.cs.pix.bpmn.DomUtils.*;
 
 public class GraphBuilder {
     private final HashMap<String, Boolean> visitedNodes = new HashMap<>();
@@ -20,6 +19,11 @@ public class GraphBuilder {
         if (start == null) throw new IllegalArgumentException("No start event found");
         traverseNode(start);
         return graph;
+    }
+
+    public static Graph buildFromString(String xml) throws Exception {
+        Document doc = parseXML(xml);
+        return new GraphBuilder().build(doc);
     }
 
     private void traverseNode(Node node) {

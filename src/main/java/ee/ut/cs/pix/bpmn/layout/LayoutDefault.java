@@ -45,7 +45,7 @@ public class LayoutDefault implements Layout {
         List<BPMNEdge> edges = new ArrayList<>();
         for (FlowArc edge : graph.getEdges()) {
             String id = edge.id + "_edge";
-            edges.add(new BPMNEdge(id, edge.id, edge.source.id, edge.target.id));
+            edges.add(new BPMNEdge(id, edge.id, edge.source.id, edge.target.id, edge.waypoints));
         }
         return edges;
     }

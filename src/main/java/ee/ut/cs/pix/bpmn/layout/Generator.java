@@ -1,7 +1,5 @@
 package ee.ut.cs.pix.bpmn.layout;
 
-import static ee.ut.cs.pix.bpmn.DomUtils.*;
-
 import ee.ut.cs.pix.bpmn.DomUtils;
 import ee.ut.cs.pix.bpmn.XmlExporter;
 import ee.ut.cs.pix.bpmn.graph.Graph;
@@ -12,10 +10,15 @@ import org.w3c.dom.Document;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+/** A class for generating BPMN diagrams from control flow in XML format. */
 public class Generator {
+    /**
+     * Parse the given control flow in XML format, add a BPMN diagram interchange section, and write
+     * the result to the output stream.
+     */
     public static void generateControlFlowWithDiagram(
             InputStream process, OutputStream output, Layout layout) throws Exception {
-        Document doc = parseXML(process);
+        Document doc = DomUtils.parseXML(process);
         Graph graph = new GraphBuilder().build(doc);
         layout.apply(graph);
         XmlExporter.addDiagramInterchangeToDefinitions(doc, graph);

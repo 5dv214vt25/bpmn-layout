@@ -23,7 +23,6 @@ class GraphvizLayoutTest {
 
         String dot = GraphvizLayout.graphToDot(graph);
 
-        System.out.println(dot);
         assertTrue(dot.contains("digraph G {"));
     }
 }

@@ -9,34 +9,42 @@ import guru.nidi.graphviz.engine.Graphviz;
 import guru.nidi.graphviz.model.MutableGraph;
 import guru.nidi.graphviz.parse.Parser;
 
-import java.io.File;
 import java.io.IOException;
 
 public class GraphvizLayout implements Layout {
     @Override
     public void apply(Graph graph) throws IOException {
-        String dotGraph = graphToDot(graph);
-        String dotGraphWithCoordinates = null;
-        dotGraphWithCoordinates = nidiGraphviz(dotGraph);
-
-        MutableGraph g = new Parser().read(dotGraphWithCoordinates);
-        g.nodes()
+        nidiGraphviz(graphToDot(graph))
+                .nodes()
                 .forEach(
                         n -> {
+                            // getting the node position
                             String pos = (String) n.attrs().get("pos");
                             if (pos == null) return;
                             String[] xy = pos.split(",");
+                            double x = Double.parseDouble(xy[0]);
+                            double y = Double.parseDouble(xy[1]);
+                            // updating the node position in the input graph
                             graph.getNodes().stream()
                                     .filter(node -> node.id.equals(n.name().toString()))
                                     .forEach(
                                             node -> {
-                                                node.x = Double.parseDouble(xy[0]);
-                                                node.y = Double.parseDouble(xy[1]);
+                                                node.x = x;
+                                                node.y = y;
                                             });
                         });
     }
 
-    public static String graphToDot(Graph graph) {
+    private MutableGraph nidiGraphviz(String dotGraph) throws IOException {
+        MutableGraph g = new Parser().read(dotGraph);
+        g.setDirected(true);
+        // render the graph to a string with coordinates
+        String result = Graphviz.fromGraph(g).render(Format.XDOT).toString();
+        // read back the graph with coordinates
+        return new Parser().read(result);
+    }
+
+    static String graphToDot(Graph graph) {
         StringBuilder dot = new StringBuilder();
         dot.append("digraph G {\n");
         dot.append("layout=dot;\n");
@@ -52,14 +60,6 @@ public class GraphvizLayout implements Layout {
                                                 "\"%s\" -> \"%s\";\n", e.source.id, e.target.id)));
         dot.append("}");
         return dot.toString();
-    }
-
-    private String nidiGraphviz(String dotGraph) throws IOException {
-        MutableGraph g = new Parser().read(dotGraph);
-        g.setDirected(true);
-        Graphviz.fromGraph(g).render(Format.PNG).toFile(new File("example.png"));
-        Graphviz.fromGraph(g).render(Format.XDOT).toFile(new File("example.dot"));
-        return Graphviz.fromGraph(g).render(Format.XDOT).toString();
     }
 
     private static String graphNodeToDot(FlowNode node) {

@@ -5,7 +5,8 @@ import ee.ut.cs.pix.bpmn.graph.Graph;
 import java.awt.geom.Point2D;
 import java.util.*;
 
-public class SugiyamaLayout implements Layout {
+/** Unsophisticated implementation of Sugiyama layout algorithm by LLM. */
+public class SugiyamaNaiveLayout implements Layout {
     @Override
     public void apply(Graph graph) {
         SugiyamaAlgorithm layout = new SugiyamaAlgorithm(graph);

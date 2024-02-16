@@ -1,33 +1,80 @@
 package ee.ut.cs.pix.bpmn.graph;
 
+import static ee.ut.cs.pix.bpmn.DomUtils.*;
+
 import ee.ut.cs.pix.bpmn.DomUtils;
 import ee.ut.cs.pix.bpmn.di.BPMNElement;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.StringReader;
 import java.util.HashMap;
 import java.util.List;
-
-import static ee.ut.cs.pix.bpmn.DomUtils.*;
 
 public class GraphBuilder {
     private final HashMap<String, Boolean> visitedNodes = new HashMap<>();
     private final Graph graph = new Graph();
+
+    public static Graph buildFromString(String xml) throws Exception {
+        ByteArrayInputStream xmlStream = new ByteArrayInputStream(xml.getBytes());
+        Document doc = parseXML(xmlStream);
+        return new GraphBuilder().build(doc);
+    }
+
+    private static String getOptionalName(Node node) {
+        String name;
+        try {
+            name = node.getAttributes().getNamedItem("name").getNodeValue();
+        } catch (NullPointerException e) {
+            name = "";
+        }
+        return name;
+    }
+
+    private static Node getSourceFromSequenceFlow(Node sequenceFlow) {
+        String sourceRef = getAttributeValue(sequenceFlow, "sourceRef");
+        return getNodeById(sequenceFlow.getOwnerDocument(), sourceRef);
+    }
+
+    private static Node getTargetFromSequenceFlow(Node sequenceFlow) {
+        String targetRef = getAttributeValue(sequenceFlow, "targetRef");
+        return getNodeById(sequenceFlow.getOwnerDocument(), targetRef);
+    }
+
+    private static String getAttributeValue(Node node, String attributeName) {
+        return node.getAttributes().getNamedItem(attributeName).getNodeValue();
+    }
+
+    private static List<Node> getOutgoingNodes(Node node) {
+        return getChildrenByTagName(node, "outgoing");
+    }
+
+    private static List<Node> getIncomingNodes(Node node) {
+        return getChildrenByTagName(node, "incoming");
+    }
+
+    private static FlowNode createFlowNode(Node node) {
+        String id = node.getAttributes().getNamedItem("id").getNodeValue();
+        String name = getOptionalName(node);
+        String nodeName = node.getNodeName();
+        return new FlowNode(id, name, BPMNElement.fromValue(nodeName));
+    }
+
+    private static FlowArc createFlowArc(Node node) {
+        String id = node.getAttributes().getNamedItem("id").getNodeValue();
+        String name = getOptionalName(node);
+        Node source = getSourceFromSequenceFlow(node);
+        Node target = getTargetFromSequenceFlow(node);
+        return new FlowArc(
+                id, name, createFlowNode(source), createFlowNode(target), BPMNElement.SEQUENCEFLOW);
+    }
 
     public Graph build(Document doc) {
         Node start = DomUtils.getFirstByTagName(doc, "startEvent");
         if (start == null) throw new IllegalArgumentException("No start event found");
         traverseNode(start);
         return graph;
-    }
-
-    public static Graph buildFromString(String xml) throws Exception {
-        ByteArrayInputStream xmlStream = new ByteArrayInputStream(xml.getBytes());
-        Document doc = parseXML(xmlStream);
-        return new GraphBuilder().build(doc);
     }
 
     private void traverseNode(Node node) {
@@ -63,53 +110,5 @@ public class GraphBuilder {
 
     private void addToVisited(Node node) {
         visitedNodes.put(node.getAttributes().getNamedItem("id").getNodeValue(), true);
-    }
-
-    private Node getSourceFromSequenceFlow(Node sequenceFlow) {
-        String sourceRef = getAttributeValue(sequenceFlow, "sourceRef");
-        return getNodeById(sequenceFlow.getOwnerDocument(), sourceRef);
-    }
-
-    private Node getTargetFromSequenceFlow(Node sequenceFlow) {
-        String targetRef = getAttributeValue(sequenceFlow, "targetRef");
-        return getNodeById(sequenceFlow.getOwnerDocument(), targetRef);
-    }
-
-    private String getAttributeValue(Node node, String attributeName) {
-        return node.getAttributes().getNamedItem(attributeName).getNodeValue();
-    }
-
-    private List<Node> getOutgoingNodes(Node node) {
-        return getChildrenByTagName(node, "outgoing");
-    }
-
-    private List<Node> getIncomingNodes(Node node) {
-        return getChildrenByTagName(node, "incoming");
-    }
-
-    private FlowNode createFlowNode(Node node) {
-        String id = node.getAttributes().getNamedItem("id").getNodeValue();
-        String name = getOptionalName(node);
-        String nodeName = node.getNodeName();
-        return new FlowNode(id, name, BPMNElement.fromValue(nodeName));
-    }
-
-    private FlowArc createFlowArc(Node node) {
-        String id = node.getAttributes().getNamedItem("id").getNodeValue();
-        String name = getOptionalName(node);
-        Node source = getSourceFromSequenceFlow(node);
-        Node target = getTargetFromSequenceFlow(node);
-        return new FlowArc(
-                id, name, createFlowNode(source), createFlowNode(target), BPMNElement.SEQUENCEFLOW);
-    }
-
-    private static String getOptionalName(Node node) {
-        String name;
-        try {
-            name = node.getAttributes().getNamedItem("name").getNodeValue();
-        } catch (NullPointerException e) {
-            name = "";
-        }
-        return name;
     }
 }

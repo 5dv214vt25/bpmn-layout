@@ -14,8 +14,8 @@ public class SugiyamaNaiveLayout implements Layout {
         graph.getNodes()
                 .forEach(
                         n -> {
-                            n.x = positions.get(n.id).getX();
-                            n.y = positions.get(n.id).getY();
+                            n.getBounds().setX(positions.get(n.getId()).getX());
+                            n.getBounds().setY(positions.get(n.getId()).getY());
                         });
     }
 
@@ -25,8 +25,8 @@ public class SugiyamaNaiveLayout implements Layout {
         private final Map<String, Integer> layerAssignment = new HashMap<>();
 
         public SugiyamaAlgorithm(Graph graph) {
-            graph.getNodes().forEach(n -> addNode(n.id));
-            graph.getEdges().forEach(e -> addEdge(e.source.id, e.target.id));
+            graph.getNodes().forEach(n -> addNode(n.getId()));
+            graph.getEdges().forEach(e -> addEdge(e.getSource().getId(), e.getTarget().getId()));
 
             removeCycles();
             assignLayers();

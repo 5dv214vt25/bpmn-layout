@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-class GraphvizLayoutTest {
+class SugiyamaGraphvizLayoutTest {
 
     @Test
     void graphToDot() throws Exception {
@@ -21,7 +21,7 @@ class GraphvizLayoutTest {
 
         Graph graph = GraphBuilder.buildFromString(bpmnModel);
 
-        String dot = GraphvizLayout.graphToDot(graph);
+        String dot = SugiyamaGraphvizLayout.graphToDot(graph);
 
         assertTrue(dot.contains("digraph G {"));
     }

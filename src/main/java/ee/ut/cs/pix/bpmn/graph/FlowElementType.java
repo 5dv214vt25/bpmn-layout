@@ -1,6 +1,7 @@
-package ee.ut.cs.pix.bpmn.di;
+package ee.ut.cs.pix.bpmn.graph;
 
-public enum BPMNElement {
+/** FlowElementType is an enumeration of supported flow element types of the BPMN control-flow. */
+public enum FlowElementType {
     STARTEVENT("startEvent"),
     ENDEVENT("endEvent"),
     TASK("task"),
@@ -11,12 +12,12 @@ public enum BPMNElement {
 
     private final String value;
 
-    BPMNElement(String value) {
+    FlowElementType(String value) {
         this.value = value;
     }
 
-    public static BPMNElement fromValue(String value) {
-        return BPMNElement.valueOf(value.toUpperCase());
+    public static FlowElementType fromValue(String value) {
+        return FlowElementType.valueOf(value.toUpperCase());
     }
 
     public String getValue() {

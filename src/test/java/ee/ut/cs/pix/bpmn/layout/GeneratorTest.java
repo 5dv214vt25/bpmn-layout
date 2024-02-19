@@ -21,7 +21,7 @@ class GeneratorTest {
                                 Paths.get("src/test/resources/LoanApp_simplified_nodi.bpmn"),
                                 StandardOpenOption.READ);
                 ByteArrayOutputStream output = new ByteArrayOutputStream()) {
-            Layout layout = new GraphvizLayout();
+            Layout layout = new SugiyamaGraphvizLayout();
             Generator.generateControlFlowWithDiagram(input, output, layout);
             result = output.toString();
         }

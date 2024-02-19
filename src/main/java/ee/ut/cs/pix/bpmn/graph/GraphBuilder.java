@@ -3,7 +3,6 @@ package ee.ut.cs.pix.bpmn.graph;
 import static ee.ut.cs.pix.bpmn.DomUtils.*;
 
 import ee.ut.cs.pix.bpmn.DomUtils;
-import ee.ut.cs.pix.bpmn.di.BPMNElement;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -12,6 +11,7 @@ import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.List;
 
+/** GraphBuilder provides API for building a graph from BPMN. */
 public class GraphBuilder {
     private final HashMap<String, Boolean> visitedNodes = new HashMap<>();
     private final Graph graph = new Graph();
@@ -58,7 +58,7 @@ public class GraphBuilder {
         String id = node.getAttributes().getNamedItem("id").getNodeValue();
         String name = getOptionalName(node);
         String nodeName = node.getNodeName();
-        return new FlowNode(id, name, BPMNElement.fromValue(nodeName));
+        return new FlowNode(id, name, FlowElementType.fromValue(nodeName));
     }
 
     private static FlowArc createFlowArc(Node node) {
@@ -67,7 +67,11 @@ public class GraphBuilder {
         Node source = getSourceFromSequenceFlow(node);
         Node target = getTargetFromSequenceFlow(node);
         return new FlowArc(
-                id, name, createFlowNode(source), createFlowNode(target), BPMNElement.SEQUENCEFLOW);
+                id,
+                name,
+                createFlowNode(source),
+                createFlowNode(target),
+                FlowElementType.SEQUENCEFLOW);
     }
 
     public Graph build(Document doc) {
@@ -86,11 +90,11 @@ public class GraphBuilder {
         String nodeName = node.getNodeName();
         String id = node.getAttributes().getNamedItem("id").getNodeValue();
 
-        if (BPMNElement.fromValue(nodeName) == BPMNElement.ENDEVENT) {
+        if (FlowElementType.fromValue(nodeName) == FlowElementType.ENDEVENT) {
             graph.addNode(createFlowNode(node));
             return;
         }
-        if (BPMNElement.fromValue(nodeName) == BPMNElement.SEQUENCEFLOW) {
+        if (FlowElementType.fromValue(nodeName) == FlowElementType.SEQUENCEFLOW) {
             Node next = getTargetFromSequenceFlow(node);
             if (next != null) {
                 graph.addEdge(createFlowArc(node));

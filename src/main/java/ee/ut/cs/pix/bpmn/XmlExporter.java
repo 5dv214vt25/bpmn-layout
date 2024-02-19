@@ -15,33 +15,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class XmlExporter {
-    public static void addDiagramInterchangeToDefinitions(Document doc, Graph graph)
-            throws Exception {
-        List<BPMNShape> shapes = createShapes(graph);
-        List<BPMNEdge> edges = createEdges(graph);
+    public static void addDiagramInterchangeToDefinitions(Document doc, Graph graph) {
+        List<Shape> shapes = createShapes(graph);
+        List<Edge> edges = createEdges(graph);
         addDiagramToDefinitions(doc, shapes, edges);
     }
 
-    private static List<BPMNShape> createShapes(Graph graph) {
-        List<BPMNShape> shapes = new ArrayList<>();
+    private static List<Shape> createShapes(Graph graph) {
+        List<Shape> shapes = new ArrayList<>();
         for (FlowNode node : graph.getNodes()) {
-            Bounds bounds = createBounds(node);
-            shapes.add(new BPMNShape(node.id, false, bounds));
+            shapes.add(new Shape(node.getId(), false, node.getBounds()));
         }
         return shapes;
     }
 
-    private static List<BPMNEdge> createEdges(Graph graph) {
-        List<BPMNEdge> edges = new ArrayList<>();
+    private static List<Edge> createEdges(Graph graph) {
+        List<Edge> edges = new ArrayList<>();
         for (FlowArc edge : graph.getEdges()) {
-            String id = edge.id + "_edge";
-            edges.add(new BPMNEdge(id, edge.id, edge.source.id, edge.target.id, edge.waypoints));
+            String id = edge.getId() + "_edge";
+            edges.add(
+                    new Edge(
+                            id,
+                            edge.getId(),
+                            edge.getSource().getId(),
+                            edge.getTarget().getId(),
+                            edge.getWaypoints()));
         }
         return edges;
     }
 
-    private static void addDiagramToDefinitions(
-            Document doc, List<BPMNShape> shapes, List<BPMNEdge> edges)
+    private static void addDiagramToDefinitions(Document doc, List<Shape> shapes, List<Edge> edges)
             throws IllegalArgumentException {
         // register dc and di namespaces
         Element definitionsEl = (Element) doc.getElementsByTagName("definitions").item(0);
@@ -54,38 +57,16 @@ public class XmlExporter {
                 createPlaneXML(
                         doc, processElement.getAttributes().getNamedItem("id").getNodeValue());
         diagram.appendChild(plane);
-        for (BPMNShape shape : shapes) {
+        for (Shape shape : shapes) {
             Element shapeXML = convertShapeToXML(doc, shape);
             plane.appendChild(shapeXML);
         }
-        for (BPMNEdge edge : edges) {
+        for (Edge edge : edges) {
             Element edgeXML = convertEdgeToXML(doc, edge);
             plane.appendChild(edgeXML);
         }
         Node definitions = getFirstByTagName(doc, "definitions");
         definitions.appendChild(diagram);
-    }
-
-    private static Bounds createBounds(FlowNode node) {
-        Bounds bounds;
-        if (node.type == BPMNElement.TASK) {
-            bounds = Bounds.defaultTaskBounds();
-        } else if (node.type == BPMNElement.STARTEVENT) {
-            bounds = Bounds.defaultEventBounds();
-        } else if (node.type == BPMNElement.ENDEVENT) {
-            bounds = Bounds.defaultEventBounds();
-        } else if (node.type == BPMNElement.INCLUSIVEGATEWAY) {
-            bounds = Bounds.defaultGatewayBounds();
-        } else if (node.type == BPMNElement.EXCLUSIVEGATEWAY) {
-            bounds = Bounds.defaultGatewayBounds();
-        } else if (node.type == BPMNElement.PARALLELGATEWAY) {
-            bounds = Bounds.defaultGatewayBounds();
-        } else {
-            bounds = Bounds.defaultBounds();
-        }
-        bounds.x = node.x;
-        bounds.y = node.y;
-        return bounds;
     }
 
     private static Element createDiagramXML(Document doc) {
@@ -101,48 +82,48 @@ public class XmlExporter {
         return root;
     }
 
-    private static Element convertShapeToXML(Document doc, BPMNShape shape) {
+    private static Element convertShapeToXML(Document doc, Shape shape) {
         Element root = doc.createElement("bpmndi:BPMNShape");
-        root.setAttribute("id", shape.id);
-        root.setAttribute("bpmnElement", shape.bpmnElement);
-        root.setAttribute("isMarkerVisible", shape.isMarkerVisible.toString());
-        if (shape.bounds != null) {
-            Element bounds = convertBoundsToXML(doc, shape.bounds);
+        root.setAttribute("id", shape.getId());
+        root.setAttribute("bpmnElement", shape.getBpmnElement());
+        root.setAttribute("isMarkerVisible", shape.getMarkerVisible().toString());
+        if (shape.getBounds() != null) {
+            Element bounds = convertBoundsToXML(doc, shape.getBounds());
             root.appendChild(bounds);
         }
         return root;
     }
 
-    private static Element convertEdgeToXML(Document doc, BPMNEdge edge) {
+    private static Element convertEdgeToXML(Document doc, Edge edge) {
         Element root = doc.createElement("bpmndi:BPMNEdge");
-        root.setAttribute("id", edge.id);
-        root.setAttribute("bpmnElement", edge.bpmnElement);
-        if (edge.sourceElement != null) {
-            root.setAttribute("sourceElement", edge.sourceElement);
+        root.setAttribute("id", edge.getId());
+        root.setAttribute("bpmnElement", edge.getBpmnElement());
+        if (edge.getSourceElement() != null) {
+            root.setAttribute("sourceElement", edge.getSourceElement());
         }
-        if (edge.targetElement != null) {
-            root.setAttribute("targetElement", edge.targetElement);
+        if (edge.getTargetElement() != null) {
+            root.setAttribute("targetElement", edge.getTargetElement());
         }
-        for (Waypoint waypoint : edge.waypoints) {
+        for (EdgeWaypoint waypoint : edge.getWaypoints()) {
             Element wp = convertWaypointToXML(doc, waypoint);
             root.appendChild(wp);
         }
         return root;
     }
 
-    private static Element convertBoundsToXML(Document doc, Bounds bounds) {
+    private static Element convertBoundsToXML(Document doc, ShapeBounds bounds) {
         Element root = doc.createElement("dc:Bounds");
-        root.setAttribute("x", bounds.x.toString());
-        root.setAttribute("y", bounds.y.toString());
-        root.setAttribute("width", bounds.width.toString());
-        root.setAttribute("height", bounds.height.toString());
+        root.setAttribute("x", bounds.getX().toString());
+        root.setAttribute("y", bounds.getY().toString());
+        root.setAttribute("width", bounds.getWidth().toString());
+        root.setAttribute("height", bounds.getHeight().toString());
         return root;
     }
 
-    private static Element convertWaypointToXML(Document doc, Waypoint waypoint) {
+    private static Element convertWaypointToXML(Document doc, EdgeWaypoint waypoint) {
         Element root = doc.createElement("di:waypoint");
-        root.setAttribute("x", waypoint.x.toString());
-        root.setAttribute("y", waypoint.y.toString());
+        root.setAttribute("x", waypoint.getX().toString());
+        root.setAttribute("y", waypoint.getY().toString());
         return root;
     }
 }

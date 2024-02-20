@@ -83,14 +83,14 @@ public class GraphBuilder {
         String id = node.getAttributes().getNamedItem("id").getNodeValue();
         String name = getOptionalName(node);
         String nodeName = node.getNodeName();
-        return new FlowObject(id, name, FlowElementType.fromValue(nodeName));
+        return new FlowObject(id, name, nodeName);
     }
 
     private static FlowObject createFlowObject(FlowElement node) {
         String id = node.getId();
         String name = node.getName();
         String typeName = node.getElementType().getTypeName();
-        return new FlowObject(id, name, FlowElementType.fromValue(typeName));
+        return new FlowObject(id, name, typeName);
     }
 
     private static ConnectingObject createConnectingObject(Node node) {
@@ -99,11 +99,7 @@ public class GraphBuilder {
         Node source = getSourceFromSequenceFlow(node);
         Node target = getTargetFromSequenceFlow(node);
         return new ConnectingObject(
-                id,
-                name,
-                createFlowObject(source),
-                createFlowObject(target),
-                FlowElementType.SEQUENCEFLOW);
+                id, name, createFlowObject(source), createFlowObject(target), "sequenceFlow");
     }
 
     private static ConnectingObject createConnectingObject(FlowElement element) {
@@ -113,11 +109,7 @@ public class GraphBuilder {
         FlowElement source = flow.getSource();
         FlowElement target = flow.getTarget();
         return new ConnectingObject(
-                id,
-                name,
-                createFlowObject(source),
-                createFlowObject(target),
-                FlowElementType.SEQUENCEFLOW);
+                id, name, createFlowObject(source), createFlowObject(target), "sequenceFlow");
     }
 
     public Graph build(Document doc) {
@@ -140,13 +132,13 @@ public class GraphBuilder {
         if (isVisited(element)) return;
         addToVisited(element);
 
-        String typeName = element.getElementType().getTypeName();
+        String typeName = element.getElementType().getTypeName().toLowerCase();
 
-        if (FlowElementType.fromValue(typeName) == FlowElementType.ENDEVENT) {
+        if (typeName.equals("endevent")) {
             graph.addNode(createFlowObject(element));
             return;
         }
-        if (FlowElementType.fromValue(typeName) == FlowElementType.SEQUENCEFLOW) {
+        if (typeName.equals("sequenceflow")) {
             FlowElement next = getTargetFromSequenceFlow(element);
             if (next != null) {
                 graph.addEdge(createConnectingObject(element));
@@ -169,14 +161,14 @@ public class GraphBuilder {
         if (isVisited(node)) return;
         addToVisited(node);
 
-        String nodeName = node.getNodeName();
+        String nodeName = node.getNodeName().toLowerCase();
         String id = node.getAttributes().getNamedItem("id").getNodeValue();
 
-        if (FlowElementType.fromValue(nodeName) == FlowElementType.ENDEVENT) {
+        if (nodeName.equals("endevent")) {
             graph.addNode(createFlowObject(node));
             return;
         }
-        if (FlowElementType.fromValue(nodeName) == FlowElementType.SEQUENCEFLOW) {
+        if (nodeName.equals("sequenceflow")) {
             Node next = getTargetFromSequenceFlow(node);
             if (next != null) {
                 graph.addEdge(createConnectingObject(node));

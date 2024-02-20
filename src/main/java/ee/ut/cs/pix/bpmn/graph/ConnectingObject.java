@@ -11,16 +11,16 @@ public class ConnectingObject {
     private final String name;
     private final FlowObject source;
     private final FlowObject target;
-    private final FlowElementType type;
+    private final String typeName;
     private final List<EdgeWaypoint> waypoints = new ArrayList<>();
 
     public ConnectingObject(
-            String id, String name, FlowObject source, FlowObject target, FlowElementType type) {
+            String id, String name, FlowObject source, FlowObject target, String typeName) {
         this.id = id;
         this.name = name;
         this.source = source;
         this.target = target;
-        this.type = type;
+        this.typeName = typeName.toLowerCase();
     }
 
     public void addWaypoint(double x, double y) {
@@ -43,8 +43,8 @@ public class ConnectingObject {
         return target;
     }
 
-    public FlowElementType getType() {
-        return type;
+    public String getTypeName() {
+        return typeName;
     }
 
     public List<EdgeWaypoint> getWaypoints() {

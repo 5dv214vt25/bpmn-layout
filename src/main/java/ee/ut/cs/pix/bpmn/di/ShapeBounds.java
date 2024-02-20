@@ -1,7 +1,5 @@
 package ee.ut.cs.pix.bpmn.di;
 
-import ee.ut.cs.pix.bpmn.graph.FlowElementType;
-
 /** BPMN Shape Bounds of Diagram Interchange (DI) from the BPMN 2.0 specification. */
 public class ShapeBounds {
     private Double x;
@@ -16,17 +14,14 @@ public class ShapeBounds {
         this.height = height;
     }
 
-    public static ShapeBounds forNode(FlowElementType type) {
+    public static ShapeBounds forTypeName(String type) {
         ShapeBounds bounds;
-        if (type == FlowElementType.TASK) {
+        type = type.toLowerCase();
+        if (type.contains("task")) {
             bounds = ShapeBounds.defaultTaskBounds();
-        } else if (type == FlowElementType.STARTEVENT
-                || type == FlowElementType.ENDEVENT
-                || type == FlowElementType.INTERMEDIATECATCHEVENT) {
+        } else if (type.contains("event")) {
             bounds = ShapeBounds.defaultEventBounds();
-        } else if (type == FlowElementType.INCLUSIVEGATEWAY
-                || type == FlowElementType.EXCLUSIVEGATEWAY
-                || type == FlowElementType.PARALLELGATEWAY) {
+        } else if (type.contains("gateway")) {
             bounds = ShapeBounds.defaultGatewayBounds();
         } else {
             bounds = ShapeBounds.defaultBounds();

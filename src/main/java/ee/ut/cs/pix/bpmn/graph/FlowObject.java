@@ -6,14 +6,14 @@ import ee.ut.cs.pix.bpmn.di.ShapeBounds;
 public class FlowObject {
     private final String id;
     private final String name;
-    private final FlowElementType type;
+    private final String typeName; // e.g., task, startEvent, endEvent, inclusiveGateway, etc.
     private final ShapeBounds bounds;
 
-    public FlowObject(String id, String name, FlowElementType type) {
+    public FlowObject(String id, String name, String typeName) {
         this.id = id;
         this.name = name;
-        this.type = type;
-        this.bounds = ShapeBounds.forNode(type);
+        this.typeName = typeName.toLowerCase();
+        this.bounds = ShapeBounds.forTypeName(typeName);
     }
 
     public String getId() {
@@ -24,8 +24,8 @@ public class FlowObject {
         return name;
     }
 
-    public FlowElementType getType() {
-        return type;
+    public String getTypeName() {
+        return typeName;
     }
 
     public ShapeBounds getBounds() {

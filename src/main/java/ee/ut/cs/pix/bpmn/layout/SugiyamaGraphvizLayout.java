@@ -2,7 +2,6 @@ package ee.ut.cs.pix.bpmn.layout;
 
 import ee.ut.cs.pix.bpmn.di.ShapeBounds;
 import ee.ut.cs.pix.bpmn.graph.ConnectingObject;
-import ee.ut.cs.pix.bpmn.graph.FlowElementType;
 import ee.ut.cs.pix.bpmn.graph.FlowObject;
 import ee.ut.cs.pix.bpmn.graph.Graph;
 
@@ -13,7 +12,6 @@ import guru.nidi.graphviz.model.MutableGraph;
 import guru.nidi.graphviz.model.MutableNode;
 import guru.nidi.graphviz.parse.Parser;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -126,24 +124,22 @@ public class SugiyamaGraphvizLayout implements Layout {
 
     private static String graphNodeToDot(FlowObject node) {
         String id = node.getId(), name = node.getName();
-        FlowElementType type = node.getType();
+        String type = node.getTypeName();
         ShapeBounds bounds = node.getBounds();
 
         StringBuilder dot = new StringBuilder();
         // add label
         dot.append("\"").append(id).append("\" [label=\"");
         if (name == null || name.isEmpty()) {
-            dot.append(type.getValue());
+            dot.append(type);
         } else {
             dot.append(name);
         }
         dot.append("\"");
         // add shape form
-        if (type == FlowElementType.STARTEVENT || type == FlowElementType.ENDEVENT) {
+        if (type.contains("event")) {
             dot.append(", shape=ellipse");
-        } else if (type == FlowElementType.INCLUSIVEGATEWAY
-                || type == FlowElementType.EXCLUSIVEGATEWAY
-                || type == FlowElementType.PARALLELGATEWAY) {
+        } else if (type.contains("gateway")) {
             dot.append(", shape=diamond");
         }
         // add width and height

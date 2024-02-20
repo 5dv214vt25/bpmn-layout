@@ -1,0 +1,242 @@
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" targetNamespace="http://www.omg.org/bpmn20"
+             exporter="ProM. http://www.promtools.org/prom6" exporterVersion="6.3"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+    <process id="proc_648680157">
+        <startEvent id="node_9852fa0d-de37-4495-9b97-01bf075174b9" name=""/>
+        <endEvent id="node_8df92e0f-128d-4153-acda-a15b2481eef2" name=""/>
+        <task id="node_efa5ff3c-6cc0-457e-87aa-7737241c9c9e" name="Return application back to applicant">
+            <standardLoopCharacteristics testBefore="false"/>
+        </task>
+        <task id="node_1779a0ee-eafb-4c0c-938f-fa7176890f83" name="Approve application">
+            <standardLoopCharacteristics testBefore="false"/>
+        </task>
+        <task id="node_4542fd27-2c24-457f-ba03-c97bff9d2afa" name="Check credit history">
+            <standardLoopCharacteristics testBefore="false"/>
+        </task>
+        <task id="node_ea04b542-7b79-4d2d-93da-a3a2603b4b86" name="Reject application">
+            <standardLoopCharacteristics testBefore="false"/>
+        </task>
+        <task id="node_dd2f09bb-bb8f-4510-9461-4c1a067b1f65" name="Applicant completes form">
+            <standardLoopCharacteristics testBefore="false"/>
+        </task>
+        <task id="node_1f941228-e232-4b87-a8cb-6bdd9f053fb8" name="Check application form completeness">
+            <standardLoopCharacteristics testBefore="false"/>
+        </task>
+        <task id="node_fee54c15-7898-4d0f-a2c1-54b2d684ac57" name="Cancel application">
+            <standardLoopCharacteristics testBefore="false"/>
+        </task>
+        <task id="node_3a7a03bd-a409-4da0-a9e7-469feca2f5c8" name="Assess loan risk">
+            <standardLoopCharacteristics testBefore="false"/>
+        </task>
+        <task id="node_d5f61b91-14f4-4c13-a6ed-47f646a095fc" name="Appraise property">
+            <standardLoopCharacteristics testBefore="false"/>
+        </task>
+        <task id="node_71175d0b-8ee9-4b92-a351-bd9b239de58a" name="AML check">
+            <standardLoopCharacteristics testBefore="false"/>
+        </task>
+        <task id="node_43282694-02a7-4160-99ae-75e3885622fb" name="Approve loan offer">
+            <standardLoopCharacteristics testBefore="false"/>
+        </task>
+        <task id="node_3a28e6a9-38ae-4bab-a753-92acb3d1ad10" name="Design loan offer">
+            <standardLoopCharacteristics testBefore="false"/>
+        </task>
+        <exclusiveGateway id="node_394e2382-5101-4419-b179-b148d495e6df" name="" gatewayDirection="Diverging">
+            <incoming>
+                node_acc3a9c6-7009-400d-8197-722b7276a96e
+            </incoming>
+            <outgoing>
+                node_0cad2caf-9186-4cb9-98ce-9482cc8967f3
+            </outgoing>
+            <outgoing>
+                node_662969ea-0442-4a19-8697-f8e499f7494f
+            </outgoing>
+        </exclusiveGateway>
+        <exclusiveGateway id="node_91b1f170-8653-456f-91d7-e6591f1e982b" name="" gatewayDirection="Converging">
+            <incoming>
+                node_f17d5a85-df9d-4bc9-90be-c5bacd530589
+            </incoming>
+            <incoming>
+                node_fee9b4ce-277d-4f10-8783-c6ceee6c006d
+            </incoming>
+            <outgoing>
+                node_62f70da3-dcc2-4677-a21a-f02cd2c706d2
+            </outgoing>
+        </exclusiveGateway>
+        <exclusiveGateway id="node_3de7b2d2-4153-4e46-bc70-6ddc9692bfb8" name="" gatewayDirection="Converging">
+            <incoming>
+                node_cbc2203d-8bec-427f-a983-2851bff9436b
+            </incoming>
+            <incoming>
+                node_38d30d71-d5a2-426c-9891-55845739d348
+            </incoming>
+            <outgoing>
+                node_9d4e5491-8368-42d4-a9d3-6491b8dfb137
+            </outgoing>
+        </exclusiveGateway>
+        <exclusiveGateway id="node_36441e9e-3ab5-4739-ab82-52b841feb27e" name="" gatewayDirection="Converging">
+            <incoming>
+                node_c9e104a8-27fd-44bd-9f58-9cece7278c8d
+            </incoming>
+            <incoming>
+                node_deeed9ff-9f9d-440f-ad72-7a4e359a693f
+            </incoming>
+            <outgoing>
+                node_fee9b4ce-277d-4f10-8783-c6ceee6c006d
+            </outgoing>
+        </exclusiveGateway>
+        <exclusiveGateway id="node_73352f44-63cd-46ee-ae84-9b5f14d373a7" name="" gatewayDirection="Diverging">
+            <incoming>
+                node_3e2831b9-1475-464a-adc0-fb085554eab3
+            </incoming>
+            <outgoing>
+                node_089e6360-985a-4925-a17d-994eaa1a6f3e
+            </outgoing>
+            <outgoing>
+                node_08948e41-f916-4e76-a1a6-45859191f54b
+            </outgoing>
+        </exclusiveGateway>
+        <exclusiveGateway id="node_c0f42afb-0ffc-4886-beee-a583585a3b93" name="" gatewayDirection="Diverging">
+            <incoming>
+                node_009e8ca4-98c8-419b-9408-ccf0393a2ffd
+            </incoming>
+            <outgoing>
+                node_d87f2562-2589-4b1c-b8f3-d252fb50a4c6
+            </outgoing>
+            <outgoing>
+                node_634d131b-7d94-4d04-a4f1-9d1b6fcf2db1
+            </outgoing>
+        </exclusiveGateway>
+        <parallelGateway id="node_84ae0289-b2d2-4ca2-b766-0dd2ab496411" name="" gatewayDirection="Diverging">
+            <incoming>
+                node_d87f2562-2589-4b1c-b8f3-d252fb50a4c6
+            </incoming>
+            <outgoing>
+                node_76f3fef2-c21f-46d0-9738-04275560a657
+            </outgoing>
+            <outgoing>
+                node_0a2da187-cdc9-4352-9740-0bb60bd898f5
+            </outgoing>
+            <outgoing>
+                node_d11147d2-72f9-4de1-9bde-99d8d4cbfeaa
+            </outgoing>
+        </parallelGateway>
+        <parallelGateway id="node_46126e87-97ab-4b53-b7ef-040ef99bafb1" name="" gatewayDirection="Converging">
+            <incoming>
+                node_3b43c7ac-753b-4f59-b58f-dc8c22df7b5f
+            </incoming>
+            <incoming>
+                node_c183d451-b3b4-4280-a4d3-b5d3f637aedb
+            </incoming>
+            <incoming>
+                node_44262b76-958f-4b65-bae1-aaf8ea2d2fc6
+            </incoming>
+            <outgoing>
+                node_28b7b0d4-2973-4d2b-8e21-1223a3bd871e
+            </outgoing>
+        </parallelGateway>
+        <sequenceFlow id="node_8800919b-0c88-496c-92c1-41faa7e6c79c" name=""
+                      sourceRef="node_efa5ff3c-6cc0-457e-87aa-7737241c9c9e"
+                      targetRef="node_dd2f09bb-bb8f-4510-9461-4c1a067b1f65"/>
+        <sequenceFlow id="node_2b9c1133-79d5-4f96-8f8f-c93377ebae0b" name=""
+                      sourceRef="node_3a28e6a9-38ae-4bab-a753-92acb3d1ad10"
+                      targetRef="node_43282694-02a7-4160-99ae-75e3885622fb"/>
+        <sequenceFlow id="node_009e8ca4-98c8-419b-9408-ccf0393a2ffd" name=""
+                      sourceRef="node_1f941228-e232-4b87-a8cb-6bdd9f053fb8"
+                      targetRef="node_c0f42afb-0ffc-4886-beee-a583585a3b93"/>
+        <sequenceFlow id="node_d87f2562-2589-4b1c-b8f3-d252fb50a4c6" name=""
+                      sourceRef="node_c0f42afb-0ffc-4886-beee-a583585a3b93"
+                      targetRef="node_84ae0289-b2d2-4ca2-b766-0dd2ab496411"/>
+        <sequenceFlow id="node_d11147d2-72f9-4de1-9bde-99d8d4cbfeaa" name=""
+                      sourceRef="node_84ae0289-b2d2-4ca2-b766-0dd2ab496411"
+                      targetRef="node_d5f61b91-14f4-4c13-a6ed-47f646a095fc"/>
+        <sequenceFlow id="node_0a2da187-cdc9-4352-9740-0bb60bd898f5" name=""
+                      sourceRef="node_84ae0289-b2d2-4ca2-b766-0dd2ab496411"
+                      targetRef="node_4542fd27-2c24-457f-ba03-c97bff9d2afa"/>
+        <sequenceFlow id="node_76f3fef2-c21f-46d0-9738-04275560a657" name=""
+                      sourceRef="node_84ae0289-b2d2-4ca2-b766-0dd2ab496411"
+                      targetRef="node_71175d0b-8ee9-4b92-a351-bd9b239de58a"/>
+        <sequenceFlow id="node_634d131b-7d94-4d04-a4f1-9d1b6fcf2db1" name=""
+                      sourceRef="node_c0f42afb-0ffc-4886-beee-a583585a3b93"
+                      targetRef="node_efa5ff3c-6cc0-457e-87aa-7737241c9c9e"/>
+        <sequenceFlow id="node_acc3a9c6-7009-400d-8197-722b7276a96e" name=""
+                      sourceRef="node_3a7a03bd-a409-4da0-a9e7-469feca2f5c8"
+                      targetRef="node_394e2382-5101-4419-b179-b148d495e6df"/>
+        <sequenceFlow id="node_662969ea-0442-4a19-8697-f8e499f7494f" name=""
+                      sourceRef="node_394e2382-5101-4419-b179-b148d495e6df"
+                      targetRef="node_3a28e6a9-38ae-4bab-a753-92acb3d1ad10"/>
+        <sequenceFlow id="node_0cad2caf-9186-4cb9-98ce-9482cc8967f3" name=""
+                      sourceRef="node_394e2382-5101-4419-b179-b148d495e6df"
+                      targetRef="Event_7a07465e-4a7c-4c0f-b6f8-fbe81c26f6d8"/>
+        <sequenceFlow id="node_3e2831b9-1475-464a-adc0-fb085554eab3" name=""
+                      sourceRef="node_43282694-02a7-4160-99ae-75e3885622fb"
+                      targetRef="node_73352f44-63cd-46ee-ae84-9b5f14d373a7"/>
+        <sequenceFlow id="node_08948e41-f916-4e76-a1a6-45859191f54b" name=""
+                      sourceRef="node_73352f44-63cd-46ee-ae84-9b5f14d373a7"
+                      targetRef="Event_65bacbf0-acab-4f11-a05c-40260cd615ce"/>
+        <sequenceFlow id="node_089e6360-985a-4925-a17d-994eaa1a6f3e" name=""
+                      sourceRef="node_73352f44-63cd-46ee-ae84-9b5f14d373a7"
+                      targetRef="Event_9f0eed1d-f31c-43b2-8145-07cad981c3f8"/>
+        <sequenceFlow id="node_deeed9ff-9f9d-440f-ad72-7a4e359a693f" name=""
+                      sourceRef="node_1779a0ee-eafb-4c0c-938f-fa7176890f83"
+                      targetRef="node_36441e9e-3ab5-4739-ab82-52b841feb27e"/>
+        <sequenceFlow id="node_c9e104a8-27fd-44bd-9f58-9cece7278c8d" name=""
+                      sourceRef="node_fee54c15-7898-4d0f-a2c1-54b2d684ac57"
+                      targetRef="node_36441e9e-3ab5-4739-ab82-52b841feb27e"/>
+        <sequenceFlow id="node_28b7b0d4-2973-4d2b-8e21-1223a3bd871e" name=""
+                      sourceRef="node_46126e87-97ab-4b53-b7ef-040ef99bafb1"
+                      targetRef="node_3a7a03bd-a409-4da0-a9e7-469feca2f5c8"/>
+        <sequenceFlow id="node_44262b76-958f-4b65-bae1-aaf8ea2d2fc6" name=""
+                      sourceRef="node_d5f61b91-14f4-4c13-a6ed-47f646a095fc"
+                      targetRef="node_46126e87-97ab-4b53-b7ef-040ef99bafb1"/>
+        <sequenceFlow id="node_3b43c7ac-753b-4f59-b58f-dc8c22df7b5f" name=""
+                      sourceRef="node_4542fd27-2c24-457f-ba03-c97bff9d2afa"
+                      targetRef="node_46126e87-97ab-4b53-b7ef-040ef99bafb1"/>
+        <sequenceFlow id="node_c183d451-b3b4-4280-a4d3-b5d3f637aedb" name=""
+                      sourceRef="node_71175d0b-8ee9-4b92-a351-bd9b239de58a"
+                      targetRef="node_46126e87-97ab-4b53-b7ef-040ef99bafb1"/>
+        <sequenceFlow id="node_9d4e5491-8368-42d4-a9d3-6491b8dfb137" name=""
+                      sourceRef="node_3de7b2d2-4153-4e46-bc70-6ddc9692bfb8"
+                      targetRef="node_1f941228-e232-4b87-a8cb-6bdd9f053fb8"/>
+        <sequenceFlow id="node_cbc2203d-8bec-427f-a983-2851bff9436b" name=""
+                      sourceRef="node_dd2f09bb-bb8f-4510-9461-4c1a067b1f65"
+                      targetRef="node_3de7b2d2-4153-4e46-bc70-6ddc9692bfb8"/>
+        <sequenceFlow id="node_38d30d71-d5a2-426c-9891-55845739d348" name=""
+                      sourceRef="node_9852fa0d-de37-4495-9b97-01bf075174b9"
+                      targetRef="node_3de7b2d2-4153-4e46-bc70-6ddc9692bfb8"/>
+        <sequenceFlow id="node_62f70da3-dcc2-4677-a21a-f02cd2c706d2" name=""
+                      sourceRef="node_91b1f170-8653-456f-91d7-e6591f1e982b"
+                      targetRef="node_8df92e0f-128d-4153-acda-a15b2481eef2"/>
+        <sequenceFlow id="node_fee9b4ce-277d-4f10-8783-c6ceee6c006d" name=""
+                      sourceRef="node_36441e9e-3ab5-4739-ab82-52b841feb27e"
+                      targetRef="node_91b1f170-8653-456f-91d7-e6591f1e982b"/>
+        <sequenceFlow id="node_f17d5a85-df9d-4bc9-90be-c5bacd530589" name=""
+                      sourceRef="node_ea04b542-7b79-4d2d-93da-a3a2603b4b86"
+                      targetRef="node_91b1f170-8653-456f-91d7-e6591f1e982b"/>
+        <intermediateCatchEvent id="Event_65bacbf0-acab-4f11-a05c-40260cd615ce">
+            <incoming>node_08948e41-f916-4e76-a1a6-45859191f54b</incoming>
+            <outgoing>Flow_368fb146-6c0f-4472-a095-ac4ac1867567</outgoing>
+            <timerEventDefinition id="TimerEventDefinition_a07ec7a7-faae-4920-be3f-1501b2fec941"/>
+        </intermediateCatchEvent>
+        <sequenceFlow id="Flow_368fb146-6c0f-4472-a095-ac4ac1867567"
+                      sourceRef="Event_65bacbf0-acab-4f11-a05c-40260cd615ce"
+                      targetRef="node_1779a0ee-eafb-4c0c-938f-fa7176890f83"/>
+        <intermediateCatchEvent id="Event_7a07465e-4a7c-4c0f-b6f8-fbe81c26f6d8">
+            <incoming>node_0cad2caf-9186-4cb9-98ce-9482cc8967f3</incoming>
+            <outgoing>Flow_16bd4cfc-369f-4278-8382-4354452c7c9a</outgoing>
+            <timerEventDefinition id="TimerEventDefinition_40887c1a-54a1-46fc-8dfb-aed980ab5cba"/>
+        </intermediateCatchEvent>
+        <sequenceFlow id="Flow_16bd4cfc-369f-4278-8382-4354452c7c9a"
+                      sourceRef="Event_7a07465e-4a7c-4c0f-b6f8-fbe81c26f6d8"
+                      targetRef="node_ea04b542-7b79-4d2d-93da-a3a2603b4b86"/>
+        <intermediateCatchEvent id="Event_9f0eed1d-f31c-43b2-8145-07cad981c3f8">
+            <incoming>node_089e6360-985a-4925-a17d-994eaa1a6f3e</incoming>
+            <outgoing>Flow_4100e977-761d-47a1-8161-97b7272582b1</outgoing>
+            <timerEventDefinition id="TimerEventDefinition_fd0bd67b-c83a-4078-ba36-e9077fefb5a4"/>
+        </intermediateCatchEvent>
+        <sequenceFlow id="Flow_4100e977-761d-47a1-8161-97b7272582b1"
+                      sourceRef="Event_9f0eed1d-f31c-43b2-8145-07cad981c3f8"
+                      targetRef="node_fee54c15-7898-4d0f-a2c1-54b2d684ac57"/>
+    </process>
+</definitions>

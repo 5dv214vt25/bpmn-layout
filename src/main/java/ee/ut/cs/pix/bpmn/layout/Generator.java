@@ -18,7 +18,7 @@ public class Generator {
      * Parse the given control flow in XML format, add a BPMN diagram interchange section, and write
      * the result to the output stream.
      */
-    public static void generateControlFlowWithDiagramUsingCustomParser(
+    public static void addDiagramToDefinitionsUsingCustomParser(
             InputStream process, OutputStream output, Layout layout) throws Exception {
         Document doc = DomUtils.parseXML(process);
         Graph graph = new GraphBuilder().build(doc);
@@ -31,7 +31,7 @@ public class Generator {
      * Parse the given control flow in XML format, add a BPMN diagram interchange section, and write
      * the result to the output stream.
      */
-    public static void generateControlFlowWithDiagram(
+    public static void addDiagramToDefinitions(
             InputStream input, OutputStream output, Layout layout) throws Exception {
         BpmnModelInstance model = DomUtils.parseModelInstance(input);
         Graph graph = new GraphBuilder().build(model);

@@ -13,7 +13,7 @@ import java.nio.file.StandardOpenOption;
 class GeneratorTest {
 
     @Test
-    void createLayout() throws Exception {
+    void testSimple() throws Exception {
         String result;
 
         try (InputStream input =
@@ -22,7 +22,7 @@ class GeneratorTest {
                                 StandardOpenOption.READ);
                 ByteArrayOutputStream output = new ByteArrayOutputStream()) {
             Layout layout = new SugiyamaGraphvizLayout();
-            Generator.generateControlFlowWithDiagram(input, output, layout);
+            Generator.addDiagramToDefinitions(input, output, layout);
             result = output.toString();
         }
 
@@ -31,6 +31,28 @@ class GeneratorTest {
 
         Files.write(
                 Paths.get("src/test/resources/LoanApp_simplified_nodi_layout.bpmn"),
+                result.getBytes());
+    }
+
+    @Test
+    void testTimers() throws Exception {
+        String result;
+
+        try (InputStream input =
+                        Files.newInputStream(
+                                Paths.get("src/test/resources/LoanApp_simplified_train.bpmn"),
+                                StandardOpenOption.READ);
+                ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+            Layout layout = new SugiyamaGraphvizLayout();
+            Generator.addDiagramToDefinitions(input, output, layout);
+            result = output.toString();
+        }
+
+        assertTrue(result.contains("BPMNShape"));
+        assertTrue(result.contains("BPMNEdge"));
+
+        Files.write(
+                Paths.get("src/test/resources/LoanApp_simplified_train_layout.bpmn"),
                 result.getBytes());
     }
 }

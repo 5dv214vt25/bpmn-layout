@@ -17,7 +17,7 @@ public class Main {
         Layout layout = new SugiyamaGraphvizLayout();
         try (InputStream input = Files.newInputStream(Paths.get(bpmnModelPath));
                 OutputStream output = Files.newOutputStream(Paths.get(outputFilePath))) {
-            Generator.generateControlFlowWithDiagram(input, output, layout);
+            Generator.addDiagramToDefinitions(input, output, layout);
         } catch (Exception e) {
             logger.severe(e.getMessage());
         }

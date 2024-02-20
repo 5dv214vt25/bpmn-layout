@@ -20,15 +20,13 @@ public class ShapeBounds {
         ShapeBounds bounds;
         if (type == FlowElementType.TASK) {
             bounds = ShapeBounds.defaultTaskBounds();
-        } else if (type == FlowElementType.STARTEVENT) {
+        } else if (type == FlowElementType.STARTEVENT
+                || type == FlowElementType.ENDEVENT
+                || type == FlowElementType.INTERMEDIATECATCHEVENT) {
             bounds = ShapeBounds.defaultEventBounds();
-        } else if (type == FlowElementType.ENDEVENT) {
-            bounds = ShapeBounds.defaultEventBounds();
-        } else if (type == FlowElementType.INCLUSIVEGATEWAY) {
-            bounds = ShapeBounds.defaultGatewayBounds();
-        } else if (type == FlowElementType.EXCLUSIVEGATEWAY) {
-            bounds = ShapeBounds.defaultGatewayBounds();
-        } else if (type == FlowElementType.PARALLELGATEWAY) {
+        } else if (type == FlowElementType.INCLUSIVEGATEWAY
+                || type == FlowElementType.EXCLUSIVEGATEWAY
+                || type == FlowElementType.PARALLELGATEWAY) {
             bounds = ShapeBounds.defaultGatewayBounds();
         } else {
             bounds = ShapeBounds.defaultBounds();

@@ -4,6 +4,7 @@ package ee.ut.cs.pix.bpmn.graph;
 public enum FlowElementType {
     STARTEVENT("startEvent"),
     ENDEVENT("endEvent"),
+    INTERMEDIATECATCHEVENT("intermediateCatchEvent"),
     TASK("task"),
     INCLUSIVEGATEWAY("inclusiveGateway"),
     EXCLUSIVEGATEWAY("exclusiveGateway"),

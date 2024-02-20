@@ -4,8 +4,8 @@ import static ee.ut.cs.pix.bpmn.DomUtils.*;
 
 import ee.ut.cs.pix.bpmn.DomUtils;
 
+import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.*;
-import org.camunda.bpm.model.xml.ModelInstance;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -13,6 +13,7 @@ import java.io.ByteArrayInputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * GraphBuilder provides API for building a process graph from Camunda's ModelInstance or
@@ -21,6 +22,7 @@ import java.util.List;
 public class GraphBuilder {
     private final HashMap<String, Boolean> visitedNodes = new HashMap<>();
     private final Graph graph = new Graph();
+    private BpmnModelInstance model;
 
     public static Graph buildFromString(String xml) throws Exception {
         ByteArrayInputStream xmlStream = new ByteArrayInputStream(xml.getBytes());
@@ -63,6 +65,14 @@ public class GraphBuilder {
     private static Collection<SequenceFlow> getOutgoingFlows(FlowElement element) {
         FlowNode node = (FlowNode) element;
         return node.getOutgoing();
+    }
+
+    private static Collection<SequenceFlow> getSequenceForElement(
+            BpmnModelInstance model, FlowElement element) {
+        Collection<SequenceFlow> flows = model.getModelElementsByType(SequenceFlow.class);
+        return flows.stream()
+                .filter(flow -> flow.getSource().getId().equals(element.getId()))
+                .collect(Collectors.toList());
     }
 
     private static List<Node> getIncomingNodes(Node node) {
@@ -117,7 +127,8 @@ public class GraphBuilder {
         return graph;
     }
 
-    public Graph build(ModelInstance model) {
+    public Graph build(BpmnModelInstance model) {
+        this.model = model;
         Collection<StartEvent> startEvents = model.getModelElementsByType(StartEvent.class);
         StartEvent start =
                 startEvents.stream().findFirst().orElseThrow(IllegalArgumentException::new);
@@ -146,7 +157,10 @@ public class GraphBuilder {
             }
         } else {
             graph.addNode(createFlowObject(element));
-            getOutgoingFlows(element).forEach(this::traverseFlowElement);
+            Collection<SequenceFlow> flows = getOutgoingFlows(element);
+            // some nodes may have no outgoing flows, so check the corresponding sequence flows
+            if (flows.isEmpty()) flows = getSequenceForElement(model, element);
+            flows.forEach(this::traverseFlowElement);
         }
     }
 

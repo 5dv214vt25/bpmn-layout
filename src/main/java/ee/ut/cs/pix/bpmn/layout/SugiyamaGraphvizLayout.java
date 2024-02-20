@@ -74,8 +74,6 @@ public class SugiyamaGraphvizLayout implements Layout {
         g.setDirected(true);
         // render the graph to a string with coordinates
         String result = Graphviz.fromGraph(g).render(Format.XDOT).toString();
-        Graphviz.fromGraph(g).render(Format.PNG).toFile(new File("example.png"));
-        Graphviz.fromGraph(g).render(Format.JSON).toFile(new File("example.json"));
         // read back the graph with coordinates
         return new Parser().read(result);
     }

@@ -5,16 +5,17 @@ import ee.ut.cs.pix.bpmn.di.EdgeWaypoint;
 import java.util.ArrayList;
 import java.util.List;
 
-/** FLowArc represents a sequence flow in the BPMN process. */
-public class FlowArc {
+/** ConnectingObject represents a sequence flow in the BPMN process. */
+public class ConnectingObject {
     private final String id;
     private final String name;
-    private final FlowNode source;
-    private final FlowNode target;
+    private final FlowObject source;
+    private final FlowObject target;
     private final FlowElementType type;
     private final List<EdgeWaypoint> waypoints = new ArrayList<>();
 
-    public FlowArc(String id, String name, FlowNode source, FlowNode target, FlowElementType type) {
+    public ConnectingObject(
+            String id, String name, FlowObject source, FlowObject target, FlowElementType type) {
         this.id = id;
         this.name = name;
         this.source = source;
@@ -34,11 +35,11 @@ public class FlowArc {
         return name;
     }
 
-    public FlowNode getSource() {
+    public FlowObject getSource() {
         return source;
     }
 
-    public FlowNode getTarget() {
+    public FlowObject getTarget() {
         return target;
     }
 

@@ -4,14 +4,20 @@ import static ee.ut.cs.pix.bpmn.DomUtils.*;
 
 import ee.ut.cs.pix.bpmn.DomUtils;
 
+import org.camunda.bpm.model.bpmn.instance.*;
+import org.camunda.bpm.model.xml.ModelInstance;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import java.io.ByteArrayInputStream;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-/** GraphBuilder provides API for building a graph from BPMN. */
+/**
+ * GraphBuilder provides API for building a process graph from Camunda's ModelInstance or
+ * w3c.Document.
+ */
 public class GraphBuilder {
     private final HashMap<String, Boolean> visitedNodes = new HashMap<>();
     private final Graph graph = new Graph();
@@ -42,35 +48,65 @@ public class GraphBuilder {
         return getNodeById(sequenceFlow.getOwnerDocument(), targetRef);
     }
 
+    private static FlowElement getTargetFromSequenceFlow(FlowElement element) {
+        return ((SequenceFlow) element).getTarget();
+    }
+
     private static String getAttributeValue(Node node, String attributeName) {
         return node.getAttributes().getNamedItem(attributeName).getNodeValue();
     }
 
-    private static List<Node> getOutgoingNodes(Node node) {
+    private static List<Node> getOutgoingFlows(Node node) {
         return getChildrenByTagName(node, "outgoing");
+    }
+
+    private static Collection<SequenceFlow> getOutgoingFlows(FlowElement element) {
+        FlowNode node = (FlowNode) element;
+        return node.getOutgoing();
     }
 
     private static List<Node> getIncomingNodes(Node node) {
         return getChildrenByTagName(node, "incoming");
     }
 
-    private static FlowNode createFlowNode(Node node) {
+    private static FlowObject createFlowObject(Node node) {
         String id = node.getAttributes().getNamedItem("id").getNodeValue();
         String name = getOptionalName(node);
         String nodeName = node.getNodeName();
-        return new FlowNode(id, name, FlowElementType.fromValue(nodeName));
+        return new FlowObject(id, name, FlowElementType.fromValue(nodeName));
     }
 
-    private static FlowArc createFlowArc(Node node) {
+    private static FlowObject createFlowObject(FlowElement node) {
+        String id = node.getId();
+        String name = node.getName();
+        String typeName = node.getElementType().getTypeName();
+        return new FlowObject(id, name, FlowElementType.fromValue(typeName));
+    }
+
+    private static ConnectingObject createConnectingObject(Node node) {
         String id = node.getAttributes().getNamedItem("id").getNodeValue();
         String name = getOptionalName(node);
         Node source = getSourceFromSequenceFlow(node);
         Node target = getTargetFromSequenceFlow(node);
-        return new FlowArc(
+        return new ConnectingObject(
                 id,
                 name,
-                createFlowNode(source),
-                createFlowNode(target),
+                createFlowObject(source),
+                createFlowObject(target),
+                FlowElementType.SEQUENCEFLOW);
+    }
+
+    private static ConnectingObject createConnectingObject(FlowElement element) {
+        String id = element.getId();
+        String name = element.getName();
+        SequenceFlow flow = (SequenceFlow) element;
+        FlowElement source = flow.getSource();
+        FlowElement target = flow.getTarget();
+        return new ConnectingObject(
+                id,
+                name,
+                createFlowObject(source),
+                createFlowObject(target),
                 FlowElementType.SEQUENCEFLOW);
     }
 
@@ -81,30 +117,62 @@ public class GraphBuilder {
         return graph;
     }
 
+    public Graph build(ModelInstance model) {
+        Collection<StartEvent> startEvents = model.getModelElementsByType(StartEvent.class);
+        StartEvent start =
+                startEvents.stream().findFirst().orElseThrow(IllegalArgumentException::new);
+        traverseFlowElement(start);
+        return graph;
+    }
+
+    private void traverseFlowElement(FlowElement element) {
+        if (isVisited(element)) return;
+        addToVisited(element);
+
+        String typeName = element.getElementType().getTypeName();
+
+        if (FlowElementType.fromValue(typeName) == FlowElementType.ENDEVENT) {
+            graph.addNode(createFlowObject(element));
+            return;
+        }
+        if (FlowElementType.fromValue(typeName) == FlowElementType.SEQUENCEFLOW) {
+            FlowElement next = getTargetFromSequenceFlow(element);
+            if (next != null) {
+                graph.addEdge(createConnectingObject(element));
+                traverseFlowElement(next);
+            } else {
+                throw new IllegalArgumentException(
+                        "All sequences must have the source and target values");
+            }
+        } else {
+            graph.addNode(createFlowObject(element));
+            getOutgoingFlows(element).forEach(this::traverseFlowElement);
+        }
+    }
+
     private void traverseNode(Node node) {
         if (node == null) throw new IllegalArgumentException("Node is null");
         if (isVisited(node)) return;
-
         addToVisited(node);
 
         String nodeName = node.getNodeName();
         String id = node.getAttributes().getNamedItem("id").getNodeValue();
 
         if (FlowElementType.fromValue(nodeName) == FlowElementType.ENDEVENT) {
-            graph.addNode(createFlowNode(node));
+            graph.addNode(createFlowObject(node));
             return;
         }
         if (FlowElementType.fromValue(nodeName) == FlowElementType.SEQUENCEFLOW) {
             Node next = getTargetFromSequenceFlow(node);
             if (next != null) {
-                graph.addEdge(createFlowArc(node));
+                graph.addEdge(createConnectingObject(node));
                 traverseNode(next);
             } else {
                 System.out.println("No next node found for sequence flow: " + id);
             }
         } else {
-            graph.addNode(createFlowNode(node));
-            getOutgoingNodes(node).forEach(this::traverseNode);
+            graph.addNode(createFlowObject(node));
+            getOutgoingFlows(node).forEach(this::traverseNode);
         }
     }
 
@@ -112,7 +180,15 @@ public class GraphBuilder {
         return visitedNodes.containsKey(node.getAttributes().getNamedItem("id").getNodeValue());
     }
 
+    private boolean isVisited(BaseElement element) {
+        return visitedNodes.containsKey(element.getId());
+    }
+
     private void addToVisited(Node node) {
         visitedNodes.put(node.getAttributes().getNamedItem("id").getNodeValue(), true);
+    }
+
+    private void addToVisited(BaseElement element) {
+        visitedNodes.put(element.getId(), true);
     }
 }

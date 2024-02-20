@@ -2,14 +2,14 @@ package ee.ut.cs.pix.bpmn.graph;
 
 import ee.ut.cs.pix.bpmn.di.ShapeBounds;
 
-/** FlowNode represents a node in the BPMN process, e.g., a task, event, or gateway. */
-public class FlowNode {
+/** FlowObject represents a node in the BPMN process, e.g., a task, event, or gateway. */
+public class FlowObject {
     private final String id;
     private final String name;
     private final FlowElementType type;
     private final ShapeBounds bounds;
 
-    public FlowNode(String id, String name, FlowElementType type) {
+    public FlowObject(String id, String name, FlowElementType type) {
         this.id = id;
         this.name = name;
         this.type = type;

@@ -1,5 +1,7 @@
 package ee.ut.cs.pix.bpmn;
 
+import org.camunda.bpm.model.bpmn.BpmnModelInstance;
+import org.camunda.bpm.model.bpmn.impl.BpmnParser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -28,6 +30,10 @@ public class DomUtils {
         Document doc = builder.parse(new InputSource(input));
         doc.getDocumentElement().normalize();
         return doc;
+    }
+
+    public static BpmnModelInstance parseModelInstance(InputStream input) {
+        return new BpmnParser().parseModelFromStream(input);
     }
 
     public static String toXML(Document doc) throws Exception {

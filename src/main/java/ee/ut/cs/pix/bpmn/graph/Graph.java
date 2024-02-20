@@ -8,22 +8,22 @@ import java.util.List;
  * the nodes.
  */
 public class Graph {
-    private final List<FlowNode> nodes = new ArrayList<>();
-    private final List<FlowArc> edges = new ArrayList<>();
+    private final List<FlowObject> nodes = new ArrayList<>();
+    private final List<ConnectingObject> edges = new ArrayList<>();
 
-    public List<FlowNode> getNodes() {
+    public List<FlowObject> getNodes() {
         return nodes;
     }
 
-    public List<FlowArc> getEdges() {
+    public List<ConnectingObject> getEdges() {
         return edges;
     }
 
-    public void addNode(FlowNode node) {
+    public void addNode(FlowObject node) {
         nodes.add(node);
     }
 
-    public void addEdge(FlowArc edge) {
+    public void addEdge(ConnectingObject edge) {
         edges.add(edge);
     }
 }

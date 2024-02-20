@@ -1,17 +1,21 @@
 package ee.ut.cs.pix.bpmn.layout;
 
 import ee.ut.cs.pix.bpmn.di.ShapeBounds;
+import ee.ut.cs.pix.bpmn.graph.ConnectingObject;
 import ee.ut.cs.pix.bpmn.graph.FlowElementType;
-import ee.ut.cs.pix.bpmn.graph.FlowNode;
+import ee.ut.cs.pix.bpmn.graph.FlowObject;
 import ee.ut.cs.pix.bpmn.graph.Graph;
 
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
+import guru.nidi.graphviz.model.Link;
 import guru.nidi.graphviz.model.MutableGraph;
 import guru.nidi.graphviz.model.MutableNode;
 import guru.nidi.graphviz.parse.Parser;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -19,29 +23,49 @@ import java.util.HashMap;
  * layout).
  */
 public class SugiyamaGraphvizLayout implements Layout {
+    private static final Double pointsInInch = 72.0;
+
     @Override
     public void apply(Graph graph) throws IOException {
         updateGraphNodes(applyLayout(graphToDot(graph)), graph);
     }
 
     private void updateGraphNodes(MutableGraph gvGraph, Graph graph) {
-        // constructing a map to reduce time for finding nodes in the original graph below
-        HashMap<String, FlowNode> nodeIdToNodeMap = new HashMap<>();
-        graph.getNodes()
-                .forEach(
-                        n ->
-                                nodeIdToNodeMap.put(
-                                        n.getId(), n)); // assumption: each node has a unique ID
+        // constructing maps to reduce time for finding nodes and edges in the original graph below
+        HashMap<String, FlowObject> nodeIdToNodeMap = new HashMap<>();
+        HashMap<String, ConnectingObject> edgeIdToNodeMap = new HashMap<>();
+        // assumption: each element has a unique ID
+        graph.getNodes().forEach(n -> nodeIdToNodeMap.put(n.getId(), n));
+        graph.getEdges().forEach(e -> edgeIdToNodeMap.put(e.getId(), e));
         // updating the nodes
         gvGraph.nodes()
                 .forEach(
                         n -> {
                             double[] coordinates = nodePosition(n);
                             if (coordinates == null) return;
-                            FlowNode node = nodeIdToNodeMap.get(n.name().toString());
+                            FlowObject node = nodeIdToNodeMap.get(n.name().toString());
                             if (node == null) return;
-                            node.getBounds().setX(coordinates[0]);
-                            node.getBounds().setY(coordinates[1]);
+                            ShapeBounds bounds = node.getBounds();
+                            Double width = bounds.getWidth();
+                            Double height = bounds.getHeight();
+                            bounds.setX(coordinates[0] - width / 2.0);
+                            bounds.setY(coordinates[1] - height / 2.0);
+                        });
+        // updating the edges
+        gvGraph.edges()
+                .forEach(
+                        e -> {
+                            double[] coordinates = edgePositions(e);
+                            if (coordinates == null) return;
+                            String eId = (String) e.attrs().get("id");
+                            ConnectingObject edge = edgeIdToNodeMap.get(eId);
+                            if (edge == null) return;
+                            for (int i = 0; i < coordinates.length; i++) {
+                                double x = coordinates[i];
+                                double y = coordinates[i + 1];
+                                edge.addWaypoint(x, y);
+                                i++;
+                            }
                         });
     }
 
@@ -50,6 +74,8 @@ public class SugiyamaGraphvizLayout implements Layout {
         g.setDirected(true);
         // render the graph to a string with coordinates
         String result = Graphviz.fromGraph(g).render(Format.XDOT).toString();
+        Graphviz.fromGraph(g).render(Format.PNG).toFile(new File("example.png"));
+        Graphviz.fromGraph(g).render(Format.JSON).toFile(new File("example.json"));
         // read back the graph with coordinates
         return new Parser().read(result);
     }
@@ -58,7 +84,7 @@ public class SugiyamaGraphvizLayout implements Layout {
         StringBuilder dot = new StringBuilder();
         dot.append("digraph G {\n");
         dot.append("layout=dot;\n");
-        dot.append("node [shape=box, width=1, height=1.25, fixedsize=true];\n");
+        dot.append("node [shape=box, fixedsize=true];\n");
         dot.append("rankdir=LR;\n");
         dot.append("ranksep=1;\n");
         graph.getNodes().forEach(n -> dot.append(graphNodeToDot(n)));
@@ -67,8 +93,10 @@ public class SugiyamaGraphvizLayout implements Layout {
                         e ->
                                 dot.append(
                                         String.format(
-                                                "\"%s\" -> \"%s\";\n",
-                                                e.getSource().getId(), e.getTarget().getId())));
+                                                "\"%s\" -> \"%s\" [id=\"%s\"];\n",
+                                                e.getSource().getId(),
+                                                e.getTarget().getId(),
+                                                e.getId())));
         dot.append("}");
         return dot.toString();
     }
@@ -83,7 +111,22 @@ public class SugiyamaGraphvizLayout implements Layout {
         return coordinates;
     }
 
-    private static String graphNodeToDot(FlowNode node) {
+    private double[] edgePositions(Link edge) {
+        String pos = (String) edge.attrs().get("pos");
+        if (pos == null) return null;
+        String[] pairs = pos.split(" ");
+        // omitting the first element which is the position of the arrowhead
+        pairs = Arrays.copyOfRange(pairs, 1, pairs.length);
+        double[] coordinates = new double[pairs.length * 2];
+        for (int i = 0; i < pairs.length; i++) {
+            String[] coords = pairs[i].split(",");
+            coordinates[i * 2] = Double.parseDouble(coords[0]);
+            coordinates[i * 2 + 1] = Double.parseDouble(coords[1]);
+        }
+        return coordinates;
+    }
+
+    private static String graphNodeToDot(FlowObject node) {
         String id = node.getId(), name = node.getName();
         FlowElementType type = node.getType();
         ShapeBounds bounds = node.getBounds();
@@ -110,7 +153,7 @@ public class SugiyamaGraphvizLayout implements Layout {
             dot.append(
                     String.format(
                             ", width=%.2f, height=%.2f",
-                            bounds.getWidth() / 100, bounds.getHeight() / 80));
+                            bounds.getWidth() / pointsInInch, bounds.getHeight() / pointsInInch));
         }
         // end of the attribute list
         dot.append("];\n");

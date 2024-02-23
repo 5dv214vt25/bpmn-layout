@@ -16,6 +16,7 @@ import org.camunda.bpm.model.bpmn.instance.dc.Bounds;
 import org.camunda.bpm.model.bpmn.instance.di.Waypoint;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class XmlExporter {
@@ -72,6 +73,11 @@ public class XmlExporter {
         for (Edge edge : edges) {
             plane.addChildElement(createEdge(model, edge));
         }
+
+        // remove existing diagrams if present
+        Collection<BpmnDiagram> existingDiagrams = definitions.getBpmDiagrams();
+        if (existingDiagrams != null && !existingDiagrams.isEmpty())
+            existingDiagrams.forEach(definitions::removeChildElement);
 
         definitions.addChildElement(diagram);
     }

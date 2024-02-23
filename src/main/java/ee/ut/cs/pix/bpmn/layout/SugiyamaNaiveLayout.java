@@ -17,6 +17,16 @@ public class SugiyamaNaiveLayout implements Layout {
                             n.getBounds().setX(positions.get(n.getId()).getX());
                             n.getBounds().setY(positions.get(n.getId()).getY());
                         });
+        graph.getEdges()
+                .forEach(
+                        e -> {
+                            double x1 = positions.get(e.getSource().getId()).getX();
+                            double y1 = positions.get(e.getSource().getId()).getY();
+                            double x2 = positions.get(e.getTarget().getId()).getX();
+                            double y2 = positions.get(e.getTarget().getId()).getY();
+                            e.addWaypoint(x1, y1);
+                            e.addWaypoint(x2, y2);
+                        });
     }
 
     static class SugiyamaAlgorithm {
@@ -105,13 +115,19 @@ public class SugiyamaNaiveLayout implements Layout {
         }
 
         void assignCoordinates() {
-            // Assign coordinates to each node (simple method: nodes in the same layer have the same
-            // y-coordinate)
+            // Assign coordinates to each node (nodes in the same layer are positioned below each
+            // other)
             double xSpacing = 125;
             double ySpacing = 125;
+            Map<Integer, Integer> layerCounts = new HashMap<>();
             for (Map.Entry<String, Integer> entry : layerAssignment.entrySet()) {
-                double x = entry.getValue() * xSpacing;
-                double y = adjacencyList.get(entry.getKey()).size() * ySpacing;
+                int layer = entry.getValue();
+                double x = layer * xSpacing;
+                // Get the count of nodes already positioned in this layer
+                int count = layerCounts.getOrDefault(layer, 0);
+                double y = count * ySpacing;
+                // Update the count for this layer
+                layerCounts.put(layer, count + 1);
                 nodePositions.put(entry.getKey(), new Point2D.Double(x, y));
             }
         }

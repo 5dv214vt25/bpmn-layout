@@ -5,8 +5,7 @@ import ee.ut.cs.pix.bpmn.graph.ConnectingObject;
 import ee.ut.cs.pix.bpmn.graph.FlowObject;
 import ee.ut.cs.pix.bpmn.graph.Graph;
 
-import guru.nidi.graphviz.engine.Format;
-import guru.nidi.graphviz.engine.Graphviz;
+import guru.nidi.graphviz.engine.*;
 import guru.nidi.graphviz.model.Link;
 import guru.nidi.graphviz.model.MutableGraph;
 import guru.nidi.graphviz.model.MutableNode;
@@ -71,7 +70,12 @@ public class SugiyamaGraphvizLayout implements Layout {
         MutableGraph g = new Parser().read(dotGraph);
         g.setDirected(true);
         // render the graph to a string with coordinates
-        String result = Graphviz.fromGraph(g).render(Format.XDOT).toString();
+        String result =
+                Graphviz.fromGraph(g)
+                        .engine(Engine.DOT)
+                        .yInvert(true)
+                        .render(Format.XDOT)
+                        .toString();
         // read back the graph with coordinates
         return new Parser().read(result);
     }

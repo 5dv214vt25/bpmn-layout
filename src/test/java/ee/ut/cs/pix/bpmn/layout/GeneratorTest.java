@@ -21,7 +21,7 @@ class GeneratorTest {
                                 Paths.get("src/test/resources/LoanApp_simplified_nodi.bpmn"),
                                 StandardOpenOption.READ);
                 ByteArrayOutputStream output = new ByteArrayOutputStream()) {
-            Layout layout = new SugiyamaGraphvizLayout();
+            Layout layout = new CytoscapeRemoteLayout();
             Generator.addDiagramToDefinitions(input, output, layout);
             result = output.toString();
         }

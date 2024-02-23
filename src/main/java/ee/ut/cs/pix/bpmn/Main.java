@@ -12,7 +12,7 @@ public class Main {
         Logger logger = Logger.getLogger(Main.class.getName());
         String bpmnModelPath = args[0];
         String outputFilePath = args[1];
-        Layout layout = new CytoscapeRemoteLayout();
+        Layout layout = new SchaeferLayout();
         try (InputStream input = Files.newInputStream(Paths.get(bpmnModelPath));
                 OutputStream output = Files.newOutputStream(Paths.get(outputFilePath))) {
             Generator.addDiagramToDefinitions(input, output, layout);

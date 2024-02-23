@@ -6,7 +6,7 @@
 
     <groupId>io.github.iharsuvorau</groupId>
     <artifactId>bpmn-layout</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <packaging>jar</packaging>
 
     <properties>

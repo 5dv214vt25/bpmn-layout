@@ -42,31 +42,24 @@
             <version>2.10.1</version>
         </dependency>
         <dependency>
-            <groupId>guru.nidi</groupId>
-            <artifactId>graphviz-java</artifactId>
-            <version>0.18.1</version>
-        </dependency>
-        <dependency>
             <groupId>org.camunda.bpm.model</groupId>
             <artifactId>camunda-bpmn-model</artifactId>
             <version>7.19.0</version>
         </dependency>
         <dependency>
-            <groupId>de.odysseus.ithaka</groupId>
-            <artifactId>ithaka-digraph</artifactId>
-            <version>1.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>jgraph</groupId>
-            <artifactId>jgraph</artifactId>
-            <version>5.13.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>de.jfschaefer.layeredgraphlayout</groupId>
+            <groupId>io.github.iharsuvorau</groupId>
             <artifactId>layeredgraphlayout</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0.2</version>
         </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/iharsuvorau/layeredgraphlayout</url>
+        </repository>
+    </repositories>
 
     <build>
         <plugins>
@@ -92,19 +85,6 @@
             <id>release</id>
             <build>
                 <plugins>
-                    <plugin>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.5</version>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>

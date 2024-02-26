@@ -16,7 +16,17 @@ Run the CLI tool with the following command:
 java -jar target/bpmn-layout-jar-with-dependencies.jar input.bpmn output.bpmn
 ```
 
-## Using GitHub Packages
+## Depend on using Maven Central
+
+```xml
+<dependency>
+  <groupId>io.github.iharsuvorau</groupId>
+  <artifactId>bpmn-layout</artifactId>
+  <version>1.0.6</version>
+</dependency>
+```
+
+## Depend on using GitHub Packages
 
 Current project depends on the GitHub Packages repository for package distribution. Please, set up your access to GH
 Packages following [these guidelines](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry#installing-a-package).

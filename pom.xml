@@ -7,7 +7,7 @@
     <groupId>io.github.iharsuvorau</groupId>
     <artifactId>bpmn-layout</artifactId>
     <version>1.0.6</version>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <name>BPMN Layout Generator</name>
     <url>https://github.com/AutomatedProcessImprovement/bpmn-layout</url>
@@ -196,4 +196,9 @@
             <url>https://maven.pkg.github.com/AutomatedProcessImprovement/bpmn-layout</url>
         </repository>
     </distributionManagement>
+
+    <modules>
+        <module>layeredgraphlayout</module>
+        <module>src</module>
+    </modules>
 </project>

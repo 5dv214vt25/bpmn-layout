@@ -10,8 +10,9 @@ public class ShapeBounds {
     public ShapeBounds(Double x, Double y, Double width, Double height) {
         this.x = x;
         this.y = y;
-        this.width = width;
-        this.height = height;
+        // here we flip the width and height so we get correct arrow placements
+        this.width = height;
+        this.height = width;
     }
 
     public static ShapeBounds forTypeName(String type) {

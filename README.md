@@ -1,6 +1,9 @@
 # BPMN Layout
 
 BPMN Layout is a library and a CLI tool to generate BPMN DI layouts for BPMN processes.
+## Note
+This repo is a modified version of [bpmn-layout](https://github.com/AutomatedProcessImprovement/bpmn-layout) and its sub repo [layeredgraphlayout](https://github.com/jfschaefer/layeredgraphlayout). The coordinates are flipped, such that the bpmn diagram gets a horizontal, left-to-right layout instead of a vertical, top-to-bottom layout. The width are also modified such that the arrows is aligned better. 
+
 
 ## Getting Started
 
